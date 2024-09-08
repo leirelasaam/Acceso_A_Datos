@@ -1,0 +1,14 @@
+fecha: 2024-09-08
+hora: 13:58:56.049689200
+para: Aini
+de: Leire
+asunto: Hola
+contenido: Hola Aini, soy Leire.
+***********
+fecha: 2024-09-08
+hora: 13:58:56.049689200
+para: Leire
+de: Aini
+asunto: Re:Hola
+contenido: Hola Leire!
+***********
