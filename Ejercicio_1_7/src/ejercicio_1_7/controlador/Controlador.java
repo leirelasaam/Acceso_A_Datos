@@ -3,6 +3,7 @@ package ejercicio_1_7.controlador;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import javax.swing.table.DefaultTableModel;
@@ -10,13 +11,6 @@ import javax.swing.table.DefaultTableModel;
 import ejercicio_1_7.modelo.Mensaje;
 
 public class Controlador {
-
-	public void printMessages(ArrayList<Mensaje> mensajes) {
-		for (Mensaje mensaje : mensajes) {
-			System.out.println(mensaje.toStringFormateado());
-			System.out.println("***********");
-		}
-	}
 
 	public void addMessagesToTable(DefaultTableModel model, ArrayList<Mensaje> mensajes) {
 		for (Mensaje mensaje : mensajes) {
@@ -27,6 +21,9 @@ public class Controlador {
 	}
 
 	public ArrayList<Mensaje> parseMessages(String contenidoMsg) throws DateTimeParseException {
+		if (contenidoMsg == null)
+			return null;
+		
 		ArrayList<Mensaje> mensajes = new ArrayList<>();
 
 		String[] bloques = contenidoMsg.split("(?<=\\n)\\*{10,}(?=\\n)");
@@ -71,5 +68,31 @@ public class Controlador {
 		}
 
 		return mensajes;
+	}
+	
+	public Mensaje newMessage(String year, String month, String day, String hour, String min, String from, String to,
+			String subject, String content) throws DateTimeParseException {
+		Mensaje mensaje = null;
+		
+		LocalDate fecha = null;
+		LocalTime hora = null;
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:mm");
+		
+		if (month.matches("\\d"))
+			month = "0" + month;
+		if (day.matches("\\d"))
+			day = "0" + day;
+		
+		String fechaStr = year + "-" + month + "-" + day;
+		String horaStr = hour + ":" + min;
+		
+		fecha = LocalDate.parse(fechaStr);
+		hora = LocalTime.parse(horaStr, timeFormatter);
+
+		if (fecha != null && hora != null) {
+			mensaje = new Mensaje(fecha, hora, from, to, subject, content);
+		}
+		
+		return mensaje;
 	}
 }

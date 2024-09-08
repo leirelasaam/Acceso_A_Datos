@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import ejercicio_1_7.modelo.Mensaje;
 
@@ -18,17 +17,15 @@ public class GestorDeFicheros {
 		this.fichero = new File(ficheroPath);
 	}
 
-	public void escribir(ArrayList<Mensaje> mensajes) throws FileNotFoundException, IOException {
+	public void escribir(Mensaje mensaje) throws FileNotFoundException, IOException {
 		FileWriter fileWriter = null;
 		BufferedWriter bufferedWriter = null;
 
 		try {
 			fileWriter = new FileWriter(fichero, true);
 			bufferedWriter = new BufferedWriter(fileWriter);
-
-			for (Mensaje mensaje : mensajes) {
-				bufferedWriter.write(mensaje.toStringFormateado());
-			}
+			bufferedWriter.newLine();
+			bufferedWriter.write(mensaje.toStringFormateado());
 			
 
 		} catch (FileNotFoundException e) {

@@ -12,3 +12,43 @@ de: Aini
 asunto: Re:Hola
 contenido: Hola Leire!
 ***********
+
+fecha: 2024-01-01
+hora: 00:00
+para: Leire
+de: Aini
+asunto: Prueba
+contenido: Probando.
+***********
+
+fecha: 2024-06-28
+hora: 04:02
+para: Aini
+de: Leire
+asunto: Prueba2
+contenido: Probando2.
+***********
+
+fecha: 2021-05-05
+hora: 21:00
+para: José
+de: Pepe
+asunto: Hola
+contenido: Hola José! Qué tal andas?
+***********
+
+fecha: 2024-01-01
+hora: 00:00
+para: Paki
+de: Leire
+asunto: Carga
+contenido: Probando.
+***********
+
+fecha: 2024-01-01
+hora: 00:00
+para: Leire
+de: Paki
+asunto: Carga2
+contenido: Probando2.
+***********
