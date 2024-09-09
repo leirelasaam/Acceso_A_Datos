@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 
 import ejercicio_1_7.modelo.Mensaje;
 
-public class Controlador {
+public class GestorDeMensajes {
 
 	public void addMessagesToTable(DefaultTableModel model, ArrayList<Mensaje> mensajes) {
 		for (Mensaje mensaje : mensajes) {

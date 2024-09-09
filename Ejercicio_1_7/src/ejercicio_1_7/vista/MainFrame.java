@@ -7,8 +7,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import ejercicio_1_7.controlador.Controlador;
-import ejercicio_1_7.controlador.ficheros.GestorDeFicheros;
+import ejercicio_1_7.controlador.GestorDeMensajes;
+import ejercicio_1_7.controlador.GestorDeFicheros;
 import ejercicio_1_7.modelo.Mensaje;
 
 import java.awt.BorderLayout;
@@ -39,7 +39,7 @@ public class MainFrame extends JFrame {
 	private JPanel panelAdd = null;
 	private JPanel panelPrint = null;
 	private DefaultTableModel model = null;
-	private Controlador controlador = new Controlador();
+	private GestorDeMensajes gestorDeMensajes = new GestorDeMensajes();
 	private ArrayList<Mensaje> mensajes = null;
 	private GestorDeFicheros gestorDeFicheros = new GestorDeFicheros(FILE_PATH);
 	private JComboBox<Integer> comboYear;
@@ -359,7 +359,7 @@ public class MainFrame extends JFrame {
 
 		Mensaje mensaje = null;
 		try {
-			mensaje = controlador.newMessage(year, month, day, hour, min, from, to, subject, content);
+			mensaje = gestorDeMensajes.newMessage(year, month, day, hour, min, from, to, subject, content);
 			if (mensajesNoGuardados == null)
 				mensajesNoGuardados = new ArrayList<Mensaje>();
 			mensajesNoGuardados.add(mensaje);
@@ -433,7 +433,7 @@ public class MainFrame extends JFrame {
 		model.setRowCount(0);
 
 		if (mensajes != null) {
-			controlador.addMessagesToTable(model, mensajes);
+			gestorDeMensajes.addMessagesToTable(model, mensajes);
 		} else {
 			model.addRow(new String[] { ("No hay mensajes") });
 		}
@@ -442,7 +442,7 @@ public class MainFrame extends JFrame {
 	private void loadMessagesToArrayList() {
 		try {
 			String leer = gestorDeFicheros.leer();
-			mensajes = controlador.parseMessages(leer);
+			mensajes = gestorDeMensajes.parseMessages(leer);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		} catch (DateTimeParseException e2) {

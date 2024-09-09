@@ -1,4 +1,4 @@
-package ejercicio_1_7.controlador.ficheros;
+package ejercicio_1_7.controlador;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
