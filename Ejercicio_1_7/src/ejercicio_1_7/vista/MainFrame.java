@@ -31,8 +31,10 @@ import javax.swing.JTextPane;
 public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	// Clase:
-	private static final String FILE_PATH = "C:\\Users\\leire\\Documents\\DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
+	// Clase: 
+	private static final String FILE_PATH = "C:\\Users\\in2dm3-v\\Documents\\LEIRE_DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
+	// Casa:
+	//private static final String FILE_PATH = "C:\\Users\\leire\\Documents\\DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
 	private static final String[] MESES = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto",
 			"Septiembre", "Octubre", "Noviembre", "Diciembre" };
 
