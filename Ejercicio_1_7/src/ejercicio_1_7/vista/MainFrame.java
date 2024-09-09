@@ -437,7 +437,7 @@ public class MainFrame extends JFrame {
 	private void imprimirMensajesEnTabla() {
 		modeloTabla.setRowCount(0);
 
-		if (mensajes != null) {
+		if (mensajes != null && mensajes.size() != 0) {
 			gestorDeMensajes.cargarMensajesATabla(modeloTabla, mensajes);
 		} else {
 			modeloTabla.addRow(new String[] { ("No hay mensajes") });
@@ -454,8 +454,12 @@ public class MainFrame extends JFrame {
 			e2.printStackTrace();
 		}
 
-		String info = mensajes == null ? "No hay mensajes." : ("Se han cargado " + mensajes.size() + " mensajes.");
-		JOptionPane.showMessageDialog(null, info, "Cargar mensajes", JOptionPane.INFORMATION_MESSAGE);
+		if (mensajes == null) {
+			JOptionPane.showMessageDialog(null, "No hay mensajes.", "Error", JOptionPane.ERROR_MESSAGE);
+		} else {
+			String info = mensajes == null ? "No hay mensajes." : ("Se han cargado " + mensajes.size() + " mensajes.");
+			JOptionPane.showMessageDialog(null, info, "Cargar mensajes", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 
 	private void cambiarPanel(JPanel nuevoPanel) {

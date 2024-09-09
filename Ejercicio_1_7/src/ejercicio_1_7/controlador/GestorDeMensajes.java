@@ -21,7 +21,7 @@ public class GestorDeMensajes {
 	}
 
 	public ArrayList<Mensaje> obtenerMensajes(String contenidoMsg) throws DateTimeParseException {
-		if (contenidoMsg == null)
+		if (contenidoMsg == null || contenidoMsg.isBlank())
 			return null;
 		
 		ArrayList<Mensaje> mensajes = new ArrayList<>();
