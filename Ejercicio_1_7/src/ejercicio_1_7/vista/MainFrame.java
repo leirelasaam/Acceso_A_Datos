@@ -31,36 +31,33 @@ import javax.swing.JTextPane;
 public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	// Clase: 
-	private static final String FILE_PATH = "C:\\Users\\in2dm3-v\\Documents\\LEIRE_DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
+	// Clase:
+	private static final String RUTA_MENSAJES_TXT = "C:\\Users\\in2dm3-v\\Documents\\LEIRE_DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
 	// Casa:
-	//private static final String FILE_PATH = "C:\\Users\\leire\\Documents\\DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
+	// private static final String RUTA_MENSAJES_TXT =
+	// "C:\\Users\\leire\\Documents\\DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
 	private static final String[] MESES = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto",
 			"Septiembre", "Octubre", "Noviembre", "Diciembre" };
 
-	private JPanel panelMenu = null;
-	private JPanel panelAdd = null;
-	private JPanel panelPrint = null;
-	private DefaultTableModel model = null;
 	private GestorDeMensajes gestorDeMensajes = new GestorDeMensajes();
+	private GestorDeFicheros gestorDeFicheros = new GestorDeFicheros(RUTA_MENSAJES_TXT);
+
+	private JPanel panelMenu = null;
+	private JPanel panelNuevoMensaje = null;
+	private JPanel panelImprimir = null;
+	private DefaultTableModel modeloTabla = null;
+	private JComboBox<Integer> comboAnio;
+	private JTextField textDe;
+	private JTextField textPara;
+	private JTextField textAsunto;
+
 	private ArrayList<Mensaje> mensajes = null;
-	private GestorDeFicheros gestorDeFicheros = new GestorDeFicheros(FILE_PATH);
-	private JComboBox<Integer> comboYear;
-	private JTextField textFrom;
-	private JTextField textTo;
-	private JTextField textSubject;
 	private ArrayList<Mensaje> mensajesNoGuardados = null;
 
-	/**
-	 * Initializes the class.
-	 */
 	public MainFrame() {
 		initialize();
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	private void initialize() {
 		setTitle("Ejercicio 1.7");
 		setBounds(100, 100, 1000, 600);
@@ -69,8 +66,8 @@ public class MainFrame extends JFrame {
 		setResizable(false);
 
 		panelMenu = createPanelMenu();
-		panelAdd = createPanelAdd();
-		panelPrint = createPanelPrint();
+		panelNuevoMensaje = createPanelAdd();
+		panelImprimir = crearPanelImprimir();
 
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(panelMenu, BorderLayout.CENTER);
@@ -82,51 +79,51 @@ public class MainFrame extends JFrame {
 		panel.setLayout(null);
 		panel.setBackground(Color.BLUE);
 
-		JButton btnLoad = new JButton("Cargar mensajes");
-		btnLoad.addActionListener(new ActionListener() {
+		JButton btnCargar = new JButton("Cargar mensajes");
+		btnCargar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loadMessagesToArrayList();
+				cargarMensajesALista();
 			}
 		});
-		btnLoad.setBounds(150, 112, 235, 50);
-		panel.add(btnLoad);
+		btnCargar.setBounds(150, 112, 235, 50);
+		panel.add(btnCargar);
 
-		JButton btnAdd = new JButton("Añadir mensajes");
-		btnAdd.addActionListener(new ActionListener() {
+		JButton btnAniadir = new JButton("Añadir mensajes");
+		btnAniadir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				switchPanel(panelAdd);
+				cambiarPanel(panelNuevoMensaje);
 			}
 		});
-		btnAdd.setBounds(150, 299, 235, 50);
-		panel.add(btnAdd);
+		btnAniadir.setBounds(150, 299, 235, 50);
+		panel.add(btnAniadir);
 
-		JButton btnSave = new JButton("Guardar mensajes");
-		btnSave.setBounds(600, 112, 235, 50);
-		btnSave.addActionListener(new ActionListener() {
+		JButton btnGuardar = new JButton("Guardar mensajes");
+		btnGuardar.setBounds(600, 112, 235, 50);
+		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				saveNewMessages();
+				guardarNuevosMensajes();
 			}
 		});
-		panel.add(btnSave);
+		panel.add(btnGuardar);
 
-		JButton btnPrint = new JButton("Imprimir mensajes");
-		btnPrint.setBounds(600, 190, 235, 50);
-		btnPrint.addActionListener(new ActionListener() {
+		JButton btnImprimir = new JButton("Imprimir mensajes");
+		btnImprimir.setBounds(600, 190, 235, 50);
+		btnImprimir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				switchPanel(panelPrint);
-				loadMessagesToTable();
+				cambiarPanel(panelImprimir);
+				imprimirMensajesEnTabla();
 			}
 		});
-		panel.add(btnPrint);
+		panel.add(btnImprimir);
 
-		JButton btnExit = new JButton("Salir");
-		btnExit.addActionListener(new ActionListener() {
+		JButton btnSalir = new JButton("Salir");
+		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});
-		btnExit.setBounds(600, 380, 235, 50);
-		panel.add(btnExit);
+		btnSalir.setBounds(600, 380, 235, 50);
+		panel.add(btnSalir);
 
 		return panel;
 	}
@@ -135,171 +132,176 @@ public class MainFrame extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout(0, 0));
 
-		JButton btnBack = new JButton("Atrás");
-		btnBack.addActionListener(new ActionListener() {
+		JButton btnAtras = new JButton("Atrás");
+		btnAtras.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				switchPanel(panelMenu);
+				cambiarPanel(panelMenu);
 			}
 		});
-		panel.add(btnBack, BorderLayout.NORTH);
+		panel.add(btnAtras, BorderLayout.NORTH);
 
-		JPanel panelFields = new JPanel();
-		panel.add(panelFields, BorderLayout.CENTER);
-		panelFields.setLayout(null);
+		JPanel panelCamposNuevoMensaje = new JPanel();
+		panel.add(panelCamposNuevoMensaje, BorderLayout.CENTER);
+		panelCamposNuevoMensaje.setLayout(null);
 
 		JLabel lblFecha = new JLabel("Fecha:");
 		lblFecha.setBounds(99, 50, 80, 13);
-		panelFields.add(lblFecha);
+		panelCamposNuevoMensaje.add(lblFecha);
 
 		JLabel lblHora = new JLabel("Hora:");
 		lblHora.setBounds(99, 100, 80, 13);
-		panelFields.add(lblHora);
+		panelCamposNuevoMensaje.add(lblHora);
 
 		JLabel lblDe = new JLabel("De:");
 		lblDe.setBounds(99, 151, 80, 13);
-		panelFields.add(lblDe);
+		panelCamposNuevoMensaje.add(lblDe);
 
 		JLabel lblPara = new JLabel("Para:");
 		lblPara.setBounds(99, 200, 80, 13);
-		panelFields.add(lblPara);
+		panelCamposNuevoMensaje.add(lblPara);
 
 		JLabel lblAsunto = new JLabel("Asunto:");
 		lblAsunto.setBounds(99, 250, 80, 13);
-		panelFields.add(lblAsunto);
+		panelCamposNuevoMensaje.add(lblAsunto);
 
 		JLabel lblContenido = new JLabel("Contenido:");
 		lblContenido.setBounds(99, 300, 80, 13);
-		panelFields.add(lblContenido);
+		panelCamposNuevoMensaje.add(lblContenido);
 
-		JComboBox<Integer> comboDay = new JComboBox<Integer>();
-		comboDay.setBounds(473, 46, 52, 21);
-		panelFields.add(comboDay);
+		JComboBox<Integer> comboDia = new JComboBox<Integer>();
+		comboDia.setBounds(473, 46, 52, 21);
+		panelCamposNuevoMensaje.add(comboDia);
 
-		JComboBox<String> comboMonth = new JComboBox<String>();
-		comboMonth.setBounds(300, 46, 143, 21);
-		panelFields.add(comboMonth);
+		JComboBox<String> comboMes = new JComboBox<String>();
+		comboMes.setBounds(300, 46, 143, 21);
+		panelCamposNuevoMensaje.add(comboMes);
 
-		comboYear = new JComboBox<>();
-		comboYear.setBounds(189, 46, 82, 21);
-		panelFields.add(comboYear);
+		comboAnio = new JComboBox<>();
+		comboAnio.setBounds(189, 46, 82, 21);
+		panelCamposNuevoMensaje.add(comboAnio);
 
-		JComboBox<String> comboHour = new JComboBox<String>();
-		comboHour.setBounds(189, 96, 45, 21);
-		panelFields.add(comboHour);
+		JComboBox<String> comboHora = new JComboBox<String>();
+		comboHora.setBounds(189, 96, 45, 21);
+		panelCamposNuevoMensaje.add(comboHora);
 
-		JComboBox<String> comboMin = new JComboBox<String>();
-		comboMin.setBounds(267, 96, 45, 21);
-		panelFields.add(comboMin);
+		JComboBox<String> comboMinuto = new JComboBox<String>();
+		comboMinuto.setBounds(267, 96, 45, 21);
+		panelCamposNuevoMensaje.add(comboMinuto);
 
 		JLabel lblPuntos = new JLabel(":");
 		lblPuntos.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPuntos.setBounds(226, 100, 45, 13);
-		panelFields.add(lblPuntos);
+		panelCamposNuevoMensaje.add(lblPuntos);
 
-		textFrom = new JTextField();
-		textFrom.setBounds(189, 148, 96, 19);
-		panelFields.add(textFrom);
-		textFrom.setColumns(10);
+		textDe = new JTextField();
+		textDe.setBounds(189, 148, 96, 19);
+		panelCamposNuevoMensaje.add(textDe);
+		textDe.setColumns(10);
 
-		textTo = new JTextField();
-		textTo.setColumns(10);
-		textTo.setBounds(189, 197, 96, 19);
-		panelFields.add(textTo);
+		textPara = new JTextField();
+		textPara.setColumns(10);
+		textPara.setBounds(189, 197, 96, 19);
+		panelCamposNuevoMensaje.add(textPara);
 
-		textSubject = new JTextField();
-		textSubject.setColumns(10);
-		textSubject.setBounds(189, 247, 96, 19);
-		panelFields.add(textSubject);
+		textAsunto = new JTextField();
+		textAsunto.setColumns(10);
+		textAsunto.setBounds(189, 247, 96, 19);
+		panelCamposNuevoMensaje.add(textAsunto);
 
-		JTextPane textPaneContent = new JTextPane();
-		textPaneContent.setBounds(189, 300, 336, 81);
-		panelFields.add(textPaneContent);
+		JTextPane textPaneContenido = new JTextPane();
+		textPaneContenido.setBounds(189, 300, 336, 81);
+		panelCamposNuevoMensaje.add(textPaneContenido);
 
 		JButton btnOk = new JButton("OK");
 		btnOk.setBounds(440, 424, 85, 21);
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				addNewMessage(textPaneContent, comboMonth, comboDay, comboHour, comboMin);
+				aniadirNuevoMensaje(textPaneContenido, comboMes, comboDia, comboHora, comboMinuto);
 			}
 		});
-		panelFields.add(btnOk);
+		panelCamposNuevoMensaje.add(btnOk);
 
-		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(440, 477, 85, 21);
-		panelFields.add(btnCancel);
-
-		loadMonthCombo(comboMonth);
-		loadYearCombo();
-
-		comboYear.addActionListener(new ActionListener() {
+		JButton btnCancelar = new JButton("Cancel");
+		btnCancelar.setBounds(440, 477, 85, 21);
+		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboYear.getSelectedItem() != null)
-					reloadDays(comboMonth, comboDay);
+				resetearCampos(textPaneContenido, comboMes, comboDia, comboHora, comboMinuto);
 			}
 		});
+		panelCamposNuevoMensaje.add(btnCancelar);
 
-		comboMonth.addActionListener(new ActionListener() {
+		cargarComboMes(comboMes);
+		cargarComboAnio();
+
+		comboAnio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboMonth.getSelectedItem() != null)
-					reloadDays(comboMonth, comboDay);
+				if (comboAnio.getSelectedItem() != null)
+					recargarDias(comboMes, comboDia);
 			}
 		});
 
-		comboYear.setSelectedIndex(0);
-		comboMonth.setSelectedIndex(0);
+		comboMes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (comboMes.getSelectedItem() != null)
+					recargarDias(comboMes, comboDia);
+			}
+		});
 
-		loadHourCombo(comboHour);
-		loadMinCombo(comboMin);
+		comboAnio.setSelectedIndex(0);
+		comboMes.setSelectedIndex(0);
+
+		cargarComboHora(comboHora);
+		cargarComboMinuto(comboMinuto);
 
 		return panel;
 	}
 
-	private void loadMonthCombo(JComboBox<String> comboMonth) {
-		comboMonth.removeAllItems();
+	private void cargarComboMes(JComboBox<String> comboMes) {
+		comboMes.removeAllItems();
 		for (String mes : MESES) {
-			comboMonth.addItem(mes);
+			comboMes.addItem(mes);
 		}
 	}
 
-	private void loadYearCombo() {
-		comboYear.removeAllItems();
+	private void cargarComboAnio() {
+		comboAnio.removeAllItems();
 		for (int i = 2024; i >= 2000; i--) {
-			comboYear.addItem(i);
+			comboAnio.addItem(i);
 		}
 	}
 
-	private void loadHourCombo(JComboBox<String> comboHour) {
-		comboHour.removeAllItems();
+	private void cargarComboHora(JComboBox<String> comboHora) {
+		comboHora.removeAllItems();
 		for (int i = 0; i <= 23; i++) {
 			if (i < 10)
-				comboHour.addItem("0" + i);
+				comboHora.addItem("0" + i);
 			else
-				comboHour.addItem(i + "");
+				comboHora.addItem(i + "");
 		}
 	}
 
-	private void loadMinCombo(JComboBox<String> comboMin) {
-		comboMin.removeAllItems();
+	private void cargarComboMinuto(JComboBox<String> comboMinuto) {
+		comboMinuto.removeAllItems();
 		for (int i = 0; i <= 59; i++) {
 			if (i < 10)
-				comboMin.addItem("0" + i);
+				comboMinuto.addItem("0" + i);
 			else
-				comboMin.addItem(i + "");
+				comboMinuto.addItem(i + "");
 		}
 	}
 
-	private void reloadDays(JComboBox<String> comboMonth, JComboBox<Integer> comboDay) {
+	private void recargarDias(JComboBox<String> comboMes, JComboBox<Integer> comboDia) {
 		try {
-			int year = (int) comboYear.getSelectedItem();
-			int month = comboMonth.getSelectedIndex() + 1;
+			int year = (int) comboAnio.getSelectedItem();
+			int month = comboMes.getSelectedIndex() + 1;
 
 			YearMonth yearMonth = YearMonth.of(year, month);
 			int diasEnMes = yearMonth.lengthOfMonth();
 
-			comboDay.removeAllItems();
+			comboDia.removeAllItems();
 			for (int i = 1; i <= diasEnMes; i++) {
-				comboDay.addItem(i);
+				comboDia.addItem(i);
 			}
 		} catch (NumberFormatException ex) {
 			JOptionPane.showMessageDialog(null, "Error: El año debe ser un número válido.", "Error",
@@ -307,54 +309,55 @@ public class MainFrame extends JFrame {
 		}
 	}
 
-	private void resetFields(JTextPane textPaneContent, JComboBox<String> comboMonth, JComboBox<Integer> comboDay,
-			JComboBox<String> comboHour, JComboBox<String> comboMin) {
-		comboYear.setSelectedIndex(0);
-		comboMonth.setSelectedIndex(0);
-		comboDay.setSelectedIndex(0);
-		comboHour.setSelectedIndex(0);
-		comboMin.setSelectedIndex(0);
+	private void resetearCampos(JTextPane textPaneContenido, JComboBox<String> comboMes, JComboBox<Integer> comboDia,
+			JComboBox<String> comboHora, JComboBox<String> comboMinuto) {
+		comboAnio.setSelectedIndex(0);
+		comboMes.setSelectedIndex(0);
+		comboDia.setSelectedIndex(0);
+		comboHora.setSelectedIndex(0);
+		comboMinuto.setSelectedIndex(0);
 
-		textFrom.setText("");
-		textTo.setText("");
-		textSubject.setText("");
-		textPaneContent.setText("");
+		textDe.setText("");
+		textPara.setText("");
+		textAsunto.setText("");
+		textPaneContenido.setText("");
 	}
 
-	private void addNewMessage(JTextPane textPaneContent, JComboBox<String> comboMonth, JComboBox<Integer> comboDay,
-			JComboBox<String> comboHour, JComboBox<String> comboMin) {
+	private void aniadirNuevoMensaje(JTextPane textPaneContenido, JComboBox<String> comboMes,
+			JComboBox<Integer> comboDia, JComboBox<String> comboHora, JComboBox<String> comboMinuto) {
 
-		String year = comboYear.getSelectedItem() == null ? null : comboYear.getSelectedItem().toString();
-		String month = comboMonth.getSelectedItem() == null ? null : (comboMonth.getSelectedIndex() + 1) + "";
-		String day = comboDay.getSelectedItem() == null ? null : comboDay.getSelectedItem().toString();
-		String hour = comboHour.getSelectedItem() == null ? null : comboHour.getSelectedItem().toString();
-		String min = comboMin.getSelectedItem() == null ? null : comboMin.getSelectedItem().toString();
-		String from = textFrom.getText().isBlank() ? null : textFrom.getText();
-		String to = textTo.getText().isBlank() ? null : textTo.getText();
-		String subject = textSubject.getText().isBlank() ? null : textSubject.getText();
-		String content = textPaneContent.getText().toString().isBlank() ? null : textPaneContent.getText().toString();
+		String anio = comboAnio.getSelectedItem() == null ? null : comboAnio.getSelectedItem().toString();
+		String mes = comboMes.getSelectedItem() == null ? null : (comboMes.getSelectedIndex() + 1) + "";
+		String dia = comboDia.getSelectedItem() == null ? null : comboDia.getSelectedItem().toString();
+		String hora = comboHora.getSelectedItem() == null ? null : comboHora.getSelectedItem().toString();
+		String minuto = comboMinuto.getSelectedItem() == null ? null : comboMinuto.getSelectedItem().toString();
+		String de = textDe.getText().isBlank() ? null : textDe.getText();
+		String para = textPara.getText().isBlank() ? null : textPara.getText();
+		String asunto = textAsunto.getText().isBlank() ? null : textAsunto.getText();
+		String contenido = textPaneContenido.getText().toString().isBlank() ? null
+				: textPaneContenido.getText().toString();
 
-		if (year == null || month == null || day == null || hour == null || min == null || from == null || to == null
-				|| subject == null || content == null) {
+		if (anio == null || mes == null || dia == null || hora == null || minuto == null || de == null || para == null
+				|| asunto == null || contenido == null) {
 			JOptionPane.showMessageDialog(null, "Hay campos vacíos.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
-		} else if (!year.matches("\\d{4}")) {
+		} else if (!anio.matches("\\d{4}")) {
 			JOptionPane.showMessageDialog(null, "El año debe ser una cadena de 4 dígitos.", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
-		} else if (!month.matches("\\d{1,2}") || Integer.parseInt(month) < 1 || Integer.parseInt(month) > 12) {
+		} else if (!mes.matches("\\d{1,2}") || Integer.parseInt(mes) < 1 || Integer.parseInt(mes) > 12) {
 			JOptionPane.showMessageDialog(null, "El mes debe ser un número entre 1 y 12.", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
-		} else if (!day.matches("\\d{1,2}") || Integer.parseInt(day) < 1 || Integer.parseInt(day) > 31) {
+		} else if (!dia.matches("\\d{1,2}") || Integer.parseInt(dia) < 1 || Integer.parseInt(dia) > 31) {
 			JOptionPane.showMessageDialog(null, "El día debe ser un número entre 1 y 31.", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
-		} else if (!hour.matches("\\d{1,2}") || Integer.parseInt(hour) < 0 || Integer.parseInt(hour) > 23) {
+		} else if (!hora.matches("\\d{1,2}") || Integer.parseInt(hora) < 0 || Integer.parseInt(hora) > 23) {
 			JOptionPane.showMessageDialog(null, "La hora debe ser un número entre 0 y 23.", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
-		} else if (!min.matches("\\d{1,2}") || Integer.parseInt(min) < 0 || Integer.parseInt(min) > 59) {
+		} else if (!minuto.matches("\\d{1,2}") || Integer.parseInt(minuto) < 0 || Integer.parseInt(minuto) > 59) {
 			JOptionPane.showMessageDialog(null, "Los minutos deben ser un número entre 0 y 59.", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
@@ -362,25 +365,24 @@ public class MainFrame extends JFrame {
 
 		Mensaje mensaje = null;
 		try {
-			mensaje = gestorDeMensajes.newMessage(year, month, day, hour, min, from, to, subject, content);
+			mensaje = gestorDeMensajes.nuevoMensaje(anio, mes, dia, hora, minuto, de, para, asunto, contenido);
 			if (mensajesNoGuardados == null)
 				mensajesNoGuardados = new ArrayList<Mensaje>();
 			mensajesNoGuardados.add(mensaje);
 			JOptionPane.showMessageDialog(null, "Mensaje cargado correctamente para poder ser guardado.",
 					"Mensaje cargado", JOptionPane.INFORMATION_MESSAGE);
-			resetFields(textPaneContent, comboMonth, comboDay, comboHour, comboMin);
+			resetearCampos(textPaneContenido, comboMes, comboDia, comboHora, comboMinuto);
 		} catch (DateTimeParseException e1) {
 			JOptionPane.showMessageDialog(null, "Error al convertir fechas.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
-	private void saveNewMessages() {
+	private void guardarNuevosMensajes() {
 		if (mensajesNoGuardados == null) {
-			JOptionPane.showMessageDialog(null, "No hay mensajes nuevos.",
-					"Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "No hay mensajes nuevos.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-			
+
 		for (Mensaje mensaje : mensajesNoGuardados) {
 			try {
 				gestorDeFicheros.escribir(mensaje);
@@ -391,22 +393,22 @@ public class MainFrame extends JFrame {
 				JOptionPane.showMessageDialog(null, "Error en la escritura.", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
-		
+
 		int numeroMensajes = mensajesNoGuardados.size();
-		
+
 		JOptionPane.showMessageDialog(null, numeroMensajes + " nuevos mensajes guardados correctamente.",
 				"Mensajes guardados", JOptionPane.INFORMATION_MESSAGE);
-		
+
 		mensajesNoGuardados = null;
 	}
 
-	private JPanel createPanelPrint() {
+	private JPanel crearPanelImprimir() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout(0, 0));
 
-		String[] columnNames = { "De", "Para", "Fecha", "Hora", "Asunto", "Contenido" };
+		String[] columnas = { "De", "Para", "Fecha", "Hora", "Asunto", "Contenido" };
 
-		model = new DefaultTableModel(columnNames, 0) {
+		modeloTabla = new DefaultTableModel(columnas, 0) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -416,36 +418,36 @@ public class MainFrame extends JFrame {
 			}
 		};
 
-		JTable table = new JTable(model);
+		JTable table = new JTable(modeloTabla);
 		JScrollPane scrollPane = new JScrollPane();
 		panel.add(scrollPane);
 		scrollPane.setViewportView(table);
 
-		JButton btnBack = new JButton("Atrás");
-		btnBack.addActionListener(new ActionListener() {
+		JButton btnAtras = new JButton("Atrás");
+		btnAtras.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				switchPanel(panelMenu);
+				cambiarPanel(panelMenu);
 			}
 		});
-		panel.add(btnBack, BorderLayout.NORTH);
+		panel.add(btnAtras, BorderLayout.NORTH);
 
 		return panel;
 	}
 
-	private void loadMessagesToTable() {
-		model.setRowCount(0);
+	private void imprimirMensajesEnTabla() {
+		modeloTabla.setRowCount(0);
 
 		if (mensajes != null) {
-			gestorDeMensajes.addMessagesToTable(model, mensajes);
+			gestorDeMensajes.cargarMensajesATabla(modeloTabla, mensajes);
 		} else {
-			model.addRow(new String[] { ("No hay mensajes") });
+			modeloTabla.addRow(new String[] { ("No hay mensajes") });
 		}
 	}
 
-	private void loadMessagesToArrayList() {
+	private void cargarMensajesALista() {
 		try {
 			String leer = gestorDeFicheros.leer();
-			mensajes = gestorDeMensajes.parseMessages(leer);
+			mensajes = gestorDeMensajes.obtenerMensajes(leer);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		} catch (DateTimeParseException e2) {
@@ -456,9 +458,9 @@ public class MainFrame extends JFrame {
 		JOptionPane.showMessageDialog(null, info, "Cargar mensajes", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	private void switchPanel(JPanel newPanel) {
+	private void cambiarPanel(JPanel nuevoPanel) {
 		getContentPane().removeAll();
-		getContentPane().add(newPanel, BorderLayout.CENTER);
+		getContentPane().add(nuevoPanel, BorderLayout.CENTER);
 		revalidate();
 		repaint();
 	}

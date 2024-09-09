@@ -12,7 +12,7 @@ import ejercicio_1_7.modelo.Mensaje;
 
 public class GestorDeMensajes {
 
-	public void addMessagesToTable(DefaultTableModel model, ArrayList<Mensaje> mensajes) {
+	public void cargarMensajesATabla(DefaultTableModel model, ArrayList<Mensaje> mensajes) {
 		for (Mensaje mensaje : mensajes) {
 			model.addRow(new String[] { mensaje.getRemitente(), mensaje.getDestinatario(),
 					mensaje.getFecha().toString(), mensaje.localTimeToString(mensaje.getHora()), mensaje.getAsunto(),
@@ -20,7 +20,7 @@ public class GestorDeMensajes {
 		}
 	}
 
-	public ArrayList<Mensaje> parseMessages(String contenidoMsg) throws DateTimeParseException {
+	public ArrayList<Mensaje> obtenerMensajes(String contenidoMsg) throws DateTimeParseException {
 		if (contenidoMsg == null)
 			return null;
 		
@@ -70,27 +70,27 @@ public class GestorDeMensajes {
 		return mensajes;
 	}
 	
-	public Mensaje newMessage(String year, String month, String day, String hour, String min, String from, String to,
-			String subject, String content) throws DateTimeParseException {
+	public Mensaje nuevoMensaje(String anio, String mes, String dia, String hora, String minuto, String de, String para,
+			String asunto, String contenido) throws DateTimeParseException {
 		Mensaje mensaje = null;
 		
 		LocalDate fecha = null;
-		LocalTime hora = null;
-		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:mm");
+		LocalTime horaCompleta = null;
+		DateTimeFormatter formato = DateTimeFormatter.ofPattern("H:mm");
 		
-		if (month.matches("\\d"))
-			month = "0" + month;
-		if (day.matches("\\d"))
-			day = "0" + day;
+		if (mes.matches("\\d"))
+			mes = "0" + mes;
+		if (dia.matches("\\d"))
+			dia = "0" + dia;
 		
-		String fechaStr = year + "-" + month + "-" + day;
-		String horaStr = hour + ":" + min;
+		String fechaStr = anio + "-" + mes + "-" + dia;
+		String horaStr = hora + ":" + minuto;
 		
 		fecha = LocalDate.parse(fechaStr);
-		hora = LocalTime.parse(horaStr, timeFormatter);
+		horaCompleta = LocalTime.parse(horaStr, formato);
 
-		if (fecha != null && hora != null) {
-			mensaje = new Mensaje(fecha, hora, from, to, subject, content);
+		if (fecha != null && horaCompleta != null) {
+			mensaje = new Mensaje(fecha, horaCompleta, de, para, asunto, contenido);
 		}
 		
 		return mensaje;
