@@ -32,10 +32,9 @@ public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	// Clase:
-	private static final String RUTA_MENSAJES_TXT = "C:\\Users\\in2dm3-v\\Documents\\LEIRE_DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
+	//private static final String RUTA_MENSAJES_TXT = "C:\\Users\\in2dm3-v\\Documents\\LEIRE_DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
 	// Casa:
-	// private static final String RUTA_MENSAJES_TXT =
-	// "C:\\Users\\leire\\Documents\\DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
+	private static final String RUTA_MENSAJES_TXT = "C:\\Users\\leire\\Documents\\DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
 	private static final String[] MESES = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto",
 			"Septiembre", "Octubre", "Noviembre", "Diciembre" };
 
@@ -77,7 +76,6 @@ public class MainFrame extends JFrame {
 	private JPanel createPanelMenu() {
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
-		panel.setBackground(Color.BLUE);
 
 		JButton btnCargar = new JButton("Cargar mensajes");
 		btnCargar.addActionListener(new ActionListener() {
@@ -110,6 +108,10 @@ public class MainFrame extends JFrame {
 		btnImprimir.setBounds(600, 190, 235, 50);
 		btnImprimir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (mensajes == null) {
+					JOptionPane.showMessageDialog(null, "No se han cargado mensajes.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				cambiarPanel(panelImprimir);
 				imprimirMensajesEnTabla();
 			}
@@ -193,17 +195,17 @@ public class MainFrame extends JFrame {
 		lblPuntos.setBounds(226, 100, 45, 13);
 		panelCamposNuevoMensaje.add(lblPuntos);
 
-		textDe = new JTextField();
+		textDe = new JTextField("");
 		textDe.setBounds(189, 148, 96, 19);
 		panelCamposNuevoMensaje.add(textDe);
 		textDe.setColumns(10);
 
-		textPara = new JTextField();
+		textPara = new JTextField("");
 		textPara.setColumns(10);
 		textPara.setBounds(189, 197, 96, 19);
 		panelCamposNuevoMensaje.add(textPara);
 
-		textAsunto = new JTextField();
+		textAsunto = new JTextField("");
 		textAsunto.setColumns(10);
 		textAsunto.setBounds(189, 247, 96, 19);
 		panelCamposNuevoMensaje.add(textAsunto);
@@ -216,7 +218,6 @@ public class MainFrame extends JFrame {
 		btnOk.setBounds(440, 424, 85, 21);
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				aniadirNuevoMensaje(textPaneContenido, comboMes, comboDia, comboHora, comboMinuto);
 			}
 		});
@@ -224,7 +225,7 @@ public class MainFrame extends JFrame {
 
 		JButton btnCancelar = new JButton("Cancel");
 		btnCancelar.setBounds(440, 477, 85, 21);
-		btnOk.addActionListener(new ActionListener() {
+		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetearCampos(textPaneContenido, comboMes, comboDia, comboHora, comboMinuto);
 			}
@@ -369,7 +370,7 @@ public class MainFrame extends JFrame {
 			if (mensajesNoGuardados == null)
 				mensajesNoGuardados = new ArrayList<Mensaje>();
 			mensajesNoGuardados.add(mensaje);
-			JOptionPane.showMessageDialog(null, "Mensaje cargado correctamente para poder ser guardado.",
+			JOptionPane.showMessageDialog(null, "Mensaje nuevo creado correctamente.",
 					"Mensaje cargado", JOptionPane.INFORMATION_MESSAGE);
 			resetearCampos(textPaneContenido, comboMes, comboDia, comboHora, comboMinuto);
 		} catch (DateTimeParseException e1) {
