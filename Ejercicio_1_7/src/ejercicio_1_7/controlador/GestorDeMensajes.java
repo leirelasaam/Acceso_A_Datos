@@ -2,8 +2,8 @@ package ejercicio_1_7.controlador;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import javax.swing.table.DefaultTableModel;
@@ -70,27 +70,17 @@ public class GestorDeMensajes {
 		return mensajes;
 	}
 	
-	public Mensaje nuevoMensaje(String anio, String mes, String dia, String hora, String minuto, String de, String para,
+	public Mensaje nuevoMensaje(LocalDateTime fechaCompleta, String de, String para,
 			String asunto, String contenido) throws DateTimeParseException {
 		Mensaje mensaje = null;
 		
-		LocalDate fecha = null;
-		LocalTime horaCompleta = null;
-		DateTimeFormatter formato = DateTimeFormatter.ofPattern("H:mm");
-		
-		if (mes.matches("\\d"))
-			mes = "0" + mes;
-		if (dia.matches("\\d"))
-			dia = "0" + dia;
-		
-		String fechaStr = anio + "-" + mes + "-" + dia;
-		String horaStr = hora + ":" + minuto;
-		
-		fecha = LocalDate.parse(fechaStr);
-		horaCompleta = LocalTime.parse(horaStr, formato);
+		LocalDate fecha = fechaCompleta.toLocalDate();
+        LocalTime hora = fechaCompleta.toLocalTime();
 
-		if (fecha != null && horaCompleta != null) {
-			mensaje = new Mensaje(fecha, horaCompleta, de, para, asunto, contenido);
+        mensaje = new Mensaje(fecha, hora, de, para, asunto, contenido);
+
+		if (fecha != null && hora != null) {
+			mensaje = new Mensaje(fecha, hora, de, para, asunto, contenido);
 		}
 		
 		return mensaje;

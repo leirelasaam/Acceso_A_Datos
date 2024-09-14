@@ -61,3 +61,19 @@ de: Pepe
 asunto: TV
 contenido: Te he arreglado la TV.
 ***********
+
+fecha: 2019-07-29
+hora: 00:00
+para: Lucia
+de: Juan
+asunto: Verano
+contenido: Te mando el calendario de verano.
+***********
+
+fecha: 2018-07-07
+hora: 05:03
+para: Pedro
+de: Maria
+asunto: Hola
+contenido: Hola!
+***********
