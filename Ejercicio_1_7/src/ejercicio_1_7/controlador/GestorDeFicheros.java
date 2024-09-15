@@ -11,10 +11,11 @@ import java.io.IOException;
 import ejercicio_1_7.modelo.Mensaje;
 
 public class GestorDeFicheros {
-	private File fichero;
+	// Ruta relativa del fichero
+	private static final String RUTA_MENSAJES_TXT = "src\\ejercicio_1_7\\Mensajes.txt";
 	
-	public GestorDeFicheros(String ficheroPath) {
-		this.fichero = new File(ficheroPath);
+	public GestorDeFicheros() {
+		// Constructor vacío
 	}
 
 	public void escribir(Mensaje mensaje) throws FileNotFoundException, IOException {
@@ -22,6 +23,7 @@ public class GestorDeFicheros {
 		BufferedWriter bufferedWriter = null;
 
 		try {
+			File fichero = new File(RUTA_MENSAJES_TXT);
 			fileWriter = new FileWriter(fichero, true);
 			bufferedWriter = new BufferedWriter(fileWriter);
 			bufferedWriter.newLine();
@@ -52,6 +54,7 @@ public class GestorDeFicheros {
 		BufferedReader bufferedReader = null;
 
 		try {
+			File fichero = new File(RUTA_MENSAJES_TXT);
 			fileReader = new FileReader(fichero);
 			bufferedReader = new BufferedReader(fileReader);
 

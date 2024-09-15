@@ -24,11 +24,6 @@ public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = -7633771846060976450L;
 
-	// Clase:
-	//private static final String RUTA_MENSAJES_TXT = "C:\\Users\\in2dm3-v\\Documents\\LEIRE_DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
-	// Casa:
-	private static final String RUTA_MENSAJES_TXT = "C:\\Users\\leire\\Documents\\DAM2\\Acceso_A_Datos\\Ejercicio_1_7\\src\\ejercicio_1_7\\Mensajes.txt";
-
 	private GestorDeMensajes gestorDeMensajes = null;
 	private GestorDeFicheros gestorDeFicheros = null;
 	private GestorDeValidacion gestorDeValidacion = null;
@@ -125,10 +120,10 @@ public class MainFrame extends JFrame {
 		for (Mensaje mensaje : mensajesNoGuardados) {
 			try {
 				if (null == gestorDeFicheros)
-					gestorDeFicheros = new GestorDeFicheros(RUTA_MENSAJES_TXT);
+					gestorDeFicheros = new GestorDeFicheros();
 				gestorDeFicheros.escribir(mensaje);
 			} catch (FileNotFoundException e2) {
-				JOptionPane.showMessageDialog(null, "No se ha encontrado el archivo.", "Error",
+				JOptionPane.showMessageDialog(null, "No se ha encontrado el fichero Mensajes.txt.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 			} catch (IOException e3) {
 				JOptionPane.showMessageDialog(null, "Error en la escritura.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -157,7 +152,7 @@ public class MainFrame extends JFrame {
 	private void cargarMensajesALista() {
 		try {
 			if (null == gestorDeFicheros)
-				gestorDeFicheros = new GestorDeFicheros(RUTA_MENSAJES_TXT);
+				gestorDeFicheros = new GestorDeFicheros();
 			
 			String leer = gestorDeFicheros.leer();
 			
@@ -166,17 +161,19 @@ public class MainFrame extends JFrame {
 			
 			mensajes = gestorDeMensajes.obtenerMensajes(leer);
 			
+			if (mensajes == null) {
+				JOptionPane.showMessageDialog(null, "No hay mensajes.", "Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				String info = mensajes == null ? "No hay mensajes." : ("Se han cargado " + mensajes.size() + " mensajes.");
+				JOptionPane.showMessageDialog(null, info, "Cargar mensajes", JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+		} catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "No se ha encontrado el fichero Mensajes.txt.", "Error", JOptionPane.ERROR_MESSAGE);	
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error en la lectura del fichero.", "Error", JOptionPane.ERROR_MESSAGE);
 		} catch (DateTimeParseException e2) {
-			e2.printStackTrace();
-		}
-
-		if (mensajes == null) {
-			JOptionPane.showMessageDialog(null, "No hay mensajes.", "Error", JOptionPane.ERROR_MESSAGE);
-		} else {
-			String info = mensajes == null ? "No hay mensajes." : ("Se han cargado " + mensajes.size() + " mensajes.");
-			JOptionPane.showMessageDialog(null, info, "Cargar mensajes", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Error en la conversión de fechas", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
