@@ -1,6 +1,5 @@
 package ejercicio_1_8.vista;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
@@ -11,11 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 import ejercicio_1_8.controlador.GestorDeFicheros;
 import ejercicio_1_8.controlador.Utils;
 import ejercicio_1_8.modelo.Resultado;
+import ejercicio_1_8.vista.paneles.PanelResultados;
 
 /**
  * JPanel que contiene los elementos visuales de la aplicación para gestionar
@@ -36,6 +35,8 @@ public class PanelMenu extends JPanel {
 	private static final long serialVersionUID = -6805088280524684669L;
 	private static final int MAX_CARACTERES = 20;
 	private static final int MAX_GOLES = 99;
+	
+	private PanelResultados panelResultados;
 
 	private JTextField textFieldEquipoLocal;
 	private JTextField textFieldEquipoVisitante;
@@ -43,12 +44,6 @@ public class PanelMenu extends JPanel {
 	private JTextField textFieldGolesVisitante;
 	private JTextField textFieldLugar;
 	private JTextField textFieldFecha;
-
-	private JTabbedPane tabbedPane;
-	private JTable tableNoGuardados;
-	private JTable tableGuardados;
-	private DefaultTableModel modeloTablaNoGuardados;
-	private DefaultTableModel modeloTablaGuardados;
 
 	// Almacena los resultados que se cargan desde el archivo.
 	private ArrayList<Resultado> resultados = null;
@@ -162,30 +157,9 @@ public class PanelMenu extends JPanel {
 		btnCargar.setBounds(408, 250, 155, 40);
 		add(btnCargar);
 
-		tabbedPane = new JTabbedPane();
-		tabbedPane.setBounds(50, 325, 900, 200);
-		add(tabbedPane);
-
-		JPanel panelNoGuardados = new JPanel();
-		tabbedPane.addTab("No Guardados", panelNoGuardados);
-		modeloTablaNoGuardados = new DefaultTableModel(
-				new String[] { "Equipo local", "Equipo visitante", "Goles local", "Goles visitante", "Lugar", "Fecha" },
-				0);
-		tableNoGuardados = new JTable(modeloTablaNoGuardados);
-		JScrollPane scrollPaneNoGuardados = new JScrollPane(tableNoGuardados);
-		panelNoGuardados.setLayout(new BorderLayout());
-		panelNoGuardados.add(scrollPaneNoGuardados, BorderLayout.CENTER);
-
-		JPanel panelGuardados = new JPanel();
-		tabbedPane.addTab("Guardados", panelGuardados);
-		modeloTablaGuardados = new DefaultTableModel(
-				new String[] { "Equipo local", "Equipo visitante", "Goles local", "Goles visitante", "Lugar", "Fecha" },
-				0);
-		tableGuardados = new JTable(modeloTablaGuardados);
-		JScrollPane scrollPaneGuardados = new JScrollPane(tableGuardados);
-		panelGuardados.setLayout(new BorderLayout());
-		panelGuardados.add(scrollPaneGuardados, BorderLayout.CENTER);
-
+		panelResultados = new PanelResultados();
+		panelResultados.setBounds(50, 325, 900, 200);
+		add(panelResultados);
 	}
 
 	/**
@@ -294,7 +268,7 @@ public class PanelMenu extends JPanel {
 
 			Utils.mostrarMensaje("Completado", "Resultado añadido.");
 			resetearCampos();
-			actualizarTablaNoGuardados();
+			panelResultados.actualizarTabla(panelResultados.getModeloTablaNoGuardados(), resultadosNoGuardados);
 		}
 	}
 
@@ -324,7 +298,7 @@ public class PanelMenu extends JPanel {
 
 		resultadosNoGuardados = null;
 		Utils.mostrarMensaje("Completado", "Los resultados se han guardado.");
-		actualizarTablaNoGuardados();
+		panelResultados.actualizarTabla(panelResultados.getModeloTablaNoGuardados(), resultadosNoGuardados);
 	}
 
 	/**
@@ -336,62 +310,13 @@ public class PanelMenu extends JPanel {
 			gdf = new GestorDeFicheros();
 		try {
 			resultados = gdf.leer();
-			actualizarTablaGuardados();
+			panelResultados.actualizarTabla(panelResultados.getModeloTablaGuardados(), resultados);
 		} catch (DateTimeParseException e) {
 			Utils.mostrarError("Error en la conversión de fechas.");
 		} catch (FileNotFoundException e) {
 			Utils.mostrarError("No se ha encontrado el archivo Resultados.dat.");
 		} catch (IOException e) {
 			Utils.mostrarError("Error en la lectura del archivo.");
-		}
-	}
-
-	/**
-	 * Actualiza la tabla de resultados no guardados.
-	 */
-	private void actualizarTablaNoGuardados() {
-		modeloTablaNoGuardados.setRowCount(0);
-		
-		if (resultadosNoGuardados == null) {
-			return;
-		}
-
-		for (Resultado resultado : resultadosNoGuardados) {
-
-			String fecha = null;
-			try {
-				fecha = Utils.localDateToString(resultado.getFecha());
-			} catch (DateTimeParseException e) {
-				Utils.mostrarError("Error en la conversión de fechas.");
-			}
-
-			modeloTablaNoGuardados.addRow(new String[] { resultado.getEquipoLocal(), resultado.getEquipoVisitante(),
-					resultado.getGolesLocal() + "", resultado.getGolesVisitante() + "", resultado.getLugar(), fecha });
-		}
-	}
-
-	/**
-	 * En caso de que haya resultados, los añade en la tabla.
-	 */
-	private void actualizarTablaGuardados() {
-		if (resultados == null) {
-			Utils.mostrarError("No hay resultados cargados.");
-			return;
-		}
-
-		modeloTablaGuardados.setRowCount(0);
-
-		for (Resultado resultado : resultados) {
-
-			String fecha = null;
-			try {
-				fecha = Utils.localDateToString(resultado.getFecha());
-			} catch (DateTimeParseException e) {
-				Utils.mostrarError("Error en la conversión de fechas.");
-			}
-
-			modeloTablaGuardados.addRow(new String[] { resultado.getEquipoLocal(), resultado.getEquipoVisitante(),
-					resultado.getGolesLocal() + "", resultado.getGolesVisitante() + "", resultado.getLugar(), fecha });
 		}
 	}
 
