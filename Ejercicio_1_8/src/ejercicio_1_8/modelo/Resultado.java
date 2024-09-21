@@ -4,10 +4,13 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * Clase que representa el resultado de un partido de fútbol.
+ */
 public class Resultado implements Serializable {
 
 	private static final long serialVersionUID = -1446739639477355407L;
-	
+
 	private String equipoLocal = null;
 	private String equipoVisitante = null;
 

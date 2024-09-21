@@ -4,6 +4,9 @@ import java.awt.EventQueue;
 
 import ejercicio_1_8.vista.MainFrame;
 
+/**
+ * Ejecuta la aplicación de gestión de resultados.
+ */
 public class Ejercicio_1_8 {
 
 	public static void main(String[] args) {

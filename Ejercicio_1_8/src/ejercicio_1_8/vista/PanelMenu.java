@@ -1,23 +1,41 @@
 package ejercicio_1_8.vista;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import ejercicio_1_8.controlador.GestorDeFicheros;
+import ejercicio_1_8.controlador.Utils;
 import ejercicio_1_8.modelo.Resultado;
 
+/**
+ * JPanel que contiene los elementos visuales de la aplicación para gestionar
+ * resultados. Este panel permite al usuario introducir resultados de partidos,
+ * así como guardarlos y cargarlos desde un archivo. 
+ * 
+ * - Los resultados se muestran en un JTabbedPane con dos pestañas:
+ *   1. No Guardados: Muestra los resultados que se han añadido pero no se han guardado.
+ *   2. Guardados: Muestra los resultados que se han cargado desde un archivo.
+ *
+ * - Los botones disponibles son:
+ *   1. Añadir: Permite añadir un nuevo resultado utilizando los campos de texto.
+ *   2. Guardar: Guarda todos los resultados no guardados en un archivo.
+ *   3. Cargar: Carga los resultados desde un archivo y los muestra en la pestaña correspondiente.
+ */
 public class PanelMenu extends JPanel {
 
 	private static final long serialVersionUID = -6805088280524684669L;
+	private static final int MAX_CARACTERES = 20;
+	private static final int MAX_GOLES = 99;
 
 	private JTextField textFieldEquipoLocal;
 	private JTextField textFieldEquipoVisitante;
@@ -25,22 +43,38 @@ public class PanelMenu extends JPanel {
 	private JTextField textFieldGolesVisitante;
 	private JTextField textFieldLugar;
 	private JTextField textFieldFecha;
-	private JTable table;
-	
+
+	private JTabbedPane tabbedPane;
+	private JTable tableNoGuardados;
+	private JTable tableGuardados;
+	private DefaultTableModel modeloTablaNoGuardados;
+	private DefaultTableModel modeloTablaGuardados;
+
+	// Almacena los resultados que se cargan desde el archivo.
 	private ArrayList<Resultado> resultados = null;
+	// Almacena los resultados que se han añadido pero no se han guardado.
 	private ArrayList<Resultado> resultadosNoGuardados = null;
-	
-	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private ArrayList<JTextField> campos = new ArrayList<JTextField>();
+
+	private GestorDeFicheros gdf = null;
 
 	public PanelMenu() {
-		resultadosNoGuardados = new ArrayList<Resultado>();
-		resultadosNoGuardados.add(new Resultado("Real Madrid", "FC Barcelona", 5, 0, "Santiago Bernabeu", LocalDate.parse("09/02/2024", dtf)));
 		initialize();
+		/*
+		 * Tras inicializar los componentes, se añaden los campos a un ArrayList para
+		 * facilitar el acceso.
+		 */
+		campos.addAll(Arrays.asList(textFieldEquipoLocal, textFieldEquipoVisitante, textFieldGolesLocal,
+				textFieldGolesVisitante, textFieldLugar, textFieldFecha));
+
 	}
 
+	/**
+	 * Inicializa el JPanel junto con sus componentes.
+	 */
 	private void initialize() {
 		setLayout(null);
-		
+
 		JLabel lblEquipoLocal = new JLabel("Equipo local:");
 		lblEquipoLocal.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblEquipoLocal.setBounds(254, 33, 121, 22);
@@ -104,104 +138,261 @@ public class PanelMenu extends JPanel {
 		JButton btnAniadir = new JButton("Añadir");
 		btnAniadir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Resultado resultado = addResultado();
-				if (resultado != null) {
-					if (resultadosNoGuardados == null)
-						resultadosNoGuardados = new ArrayList<Resultado>();
-					resultadosNoGuardados.add(resultado);
-					
-					JOptionPane.showMessageDialog(null, "Resultado añadido.", "Completado", JOptionPane.INFORMATION_MESSAGE);
-				}
+				addResultado();
 			}
 		});
-		btnAniadir.setBounds(159, 281, 155, 40);
+		btnAniadir.setBounds(159, 250, 155, 40);
 		add(btnAniadir);
 
 		JButton btnGuardar = new JButton("Guardar");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (resultadosNoGuardados == null) {
-					JOptionPane.showMessageDialog(null, "No hay nuevos resultados.", "Error", JOptionPane.ERROR_MESSAGE);
-				} else {
-					guardarResultados();
-					resultadosNoGuardados = null;
-					JOptionPane.showMessageDialog(null, "Los resultados se han guardado.", "Completado", JOptionPane.INFORMATION_MESSAGE);
-				}
+				guardarResultados();
 			}
 		});
-		btnGuardar.setBounds(663, 281, 155, 40);
+		btnGuardar.setBounds(663, 250, 155, 40);
 		add(btnGuardar);
 
 		JButton btnCargar = new JButton("Cargar");
-		btnCargar.setBounds(408, 281, 155, 40);
+		btnCargar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cargarResultados();
+			}
+		});
+		btnCargar.setBounds(408, 250, 155, 40);
 		add(btnCargar);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(159, 354, 659, 178);
-		add(scrollPane);
+		tabbedPane = new JTabbedPane();
+		tabbedPane.setBounds(50, 325, 900, 200);
+		add(tabbedPane);
 
-		String[] columnas = { "Equipo local", "Equipo visitante", "Goles local", "Goles visitante", "Lugar", "Fecha" };
-		DefaultTableModel modeloTabla = new DefaultTableModel(columnas, 0) {
-			private static final long serialVersionUID = 6569740558650597143L;
+		JPanel panelNoGuardados = new JPanel();
+		tabbedPane.addTab("No Guardados", panelNoGuardados);
+		modeloTablaNoGuardados = new DefaultTableModel(
+				new String[] { "Equipo local", "Equipo visitante", "Goles local", "Goles visitante", "Lugar", "Fecha" },
+				0);
+		tableNoGuardados = new JTable(modeloTablaNoGuardados);
+		JScrollPane scrollPaneNoGuardados = new JScrollPane(tableNoGuardados);
+		panelNoGuardados.setLayout(new BorderLayout());
+		panelNoGuardados.add(scrollPaneNoGuardados, BorderLayout.CENTER);
 
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+		JPanel panelGuardados = new JPanel();
+		tabbedPane.addTab("Guardados", panelGuardados);
+		modeloTablaGuardados = new DefaultTableModel(
+				new String[] { "Equipo local", "Equipo visitante", "Goles local", "Goles visitante", "Lugar", "Fecha" },
+				0);
+		tableGuardados = new JTable(modeloTablaGuardados);
+		JScrollPane scrollPaneGuardados = new JScrollPane(tableGuardados);
+		panelGuardados.setLayout(new BorderLayout());
+		panelGuardados.add(scrollPaneGuardados, BorderLayout.CENTER);
 
-		table = new JTable(modeloTabla);
-		scrollPane.setViewportView(table);
 	}
-	
-	private Resultado addResultado() {
+
+	/**
+	 * Reestablece los campos de texto.
+	 */
+	private void resetearCampos() {
+		for (JTextField campo : campos) {
+			campo.setText("");
+		}
+	}
+
+	/**
+	 * Crea un nuevo resultado extrayendo los valores de los campos de texto,
+	 * siempre y cuando pase la validación.
+	 * 
+	 * @return Resultado con los valores correspondientes.
+	 */
+	private Resultado nuevoResultado() {
 		Resultado resultado = null;
-		
+		if (!validarCampos()) {
+			return null;
+		}
+
 		String equipoLocal = textFieldEquipoLocal.getText();
 		String equipoVisitante = textFieldEquipoVisitante.getText();
-		String golesLocalStr = textFieldGolesLocal.getText();
-		String golesVisitanteStr = textFieldGolesVisitante.getText();
+		int golesLocal = Utils.stringToInt(textFieldGolesLocal.getText());
+		int golesVisitante = Utils.stringToInt(textFieldGolesVisitante.getText());
 		String lugar = textFieldLugar.getText();
 		String fechaStr = textFieldFecha.getText();
-		
-		int golesLocal = 0;
-		int golesVisitante = 0;
-		LocalDate fecha = null;
-		
-		if (equipoLocal.isEmpty() || equipoVisitante.isEmpty() || golesLocalStr.isEmpty() || golesVisitanteStr.isEmpty() || lugar.isEmpty() || fechaStr.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Los campos no pueden estar vacíos.", "Error", JOptionPane.ERROR_MESSAGE);
-			return null;
-		} else {
-			try {
-				golesLocal = Integer.parseInt(golesLocalStr);
-				golesVisitante = Integer.parseInt(golesVisitanteStr);
-				fecha = LocalDate.parse(fechaStr, dtf);
-				
-				resultado = new Resultado(equipoLocal, equipoVisitante, golesLocal, golesVisitante, lugar, fecha);
-			} catch(NumberFormatException e) {
-				JOptionPane.showMessageDialog(null, "Los campos no pueden estar vacíos.", "Error", JOptionPane.ERROR_MESSAGE);
-				return null;
-			} catch (DateTimeParseException e1) {
-				JOptionPane.showMessageDialog(null, "El formato de la fecha es incorrecto.", "Error", JOptionPane.ERROR_MESSAGE);
-				return null;
-			}
-		}
-		
+		LocalDate fecha = Utils.stringToLocalDate(fechaStr);
+
+		resultado = new Resultado(equipoLocal, equipoVisitante, golesLocal, golesVisitante, lugar, fecha);
+
 		return resultado;
 	}
-	
-	private void guardarResultados() {
-		if (resultadosNoGuardados == null)
-			return;
-		
-		System.out.println(resultadosNoGuardados.toString());
-		try {
-			GestorDeFicheros gdf = new GestorDeFicheros();
-			for (Resultado resultado : resultadosNoGuardados) {
-				gdf.escribir(resultado);
+
+	/**
+	 * Valida que los campos de texto no estén vacíos y que los campos de equipo
+	 * local, equipo visitante y lugar no excedan el límite de caracteres máximos
+	 * establecidos. También valida si los campos de goles tienen un valor numérico
+	 * con un máximo de dos dígitos. Se muestran los mensajes de error
+	 * correspondientes en caso de no pasar una validación determinada.
+	 * 
+	 * @return True si los campos pasan la validación y False en caso contrario.
+	 */
+	private boolean validarCampos() {
+		for (JTextField campo : campos) {
+			if (campo.getText().isEmpty()) {
+				Utils.mostrarError("Los campos no pueden estar vacíos.");
+				return false;
 			}
-		} catch(Exception e) {
-			JOptionPane.showMessageDialog(null, "Error.", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+
+		// Validación de longitud
+		if (textFieldEquipoLocal.getText().length() > MAX_CARACTERES
+				|| textFieldEquipoVisitante.getText().length() > MAX_CARACTERES
+				|| textFieldLugar.getText().length() > MAX_CARACTERES) {
+			Utils.mostrarError("Los nombres de los equipos y el lugar deben tener un máximo de " + MAX_CARACTERES
+					+ " caracteres.");
+			return false;
+		}
+
+		// Validar goles
+		try {
+			int golesLocal = Utils.stringToInt(textFieldGolesLocal.getText());
+			int golesVisitante = Utils.stringToInt(textFieldGolesVisitante.getText());
+
+			if (!validarGoles(golesLocal) || !validarGoles(golesVisitante)) {
+				Utils.mostrarError("Los goles deben ser entre 0 y " + MAX_GOLES + ".");
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			Utils.mostrarError("Los goles deben tener un valor numérico.");
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Valida que los goles tengan un máximo de 2 dígitos y que el valor mínimo sea
+	 * 0.
+	 * 
+	 * @param goles Número entero que indica la cantidad de goles
+	 * @return True si pasa la validación y False si no.
+	 */
+	private boolean validarGoles(int goles) {
+		if (goles < 0 || goles > MAX_GOLES) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Si el resultado recién añadido ha pasado las validaciones, se añade al
+	 * ArrayList de resultadosNoGuardados. Después, se reestablecen los campos de
+	 * texto.
+	 */
+	private void addResultado() {
+		Resultado resultado = nuevoResultado();
+		if (resultado != null) {
+			if (resultadosNoGuardados == null)
+				resultadosNoGuardados = new ArrayList<Resultado>();
+			resultadosNoGuardados.add(resultado);
+
+			Utils.mostrarMensaje("Completado", "Resultado añadido.");
+			resetearCampos();
+			actualizarTablaNoGuardados();
 		}
 	}
-	
+
+	/**
+	 * Guarda los resultados añadidos en el archivo, en caso de que los haya.
+	 */
+	private void guardarResultados() {
+		if (resultadosNoGuardados == null) {
+			Utils.mostrarError("No hay resultados pendientes de guardar.");
+			return;
+		}
+
+		if (gdf == null)
+			gdf = new GestorDeFicheros();
+
+		for (Resultado resultado : resultadosNoGuardados) {
+			try {
+				gdf.escribir(resultado);
+			} catch (DateTimeParseException e) {
+				Utils.mostrarError("Error en la conversión de fechas.");
+			} catch (FileNotFoundException e) {
+				Utils.mostrarError("No se ha encontrado el archivo Resultados.dat.");
+			} catch (IOException e) {
+				Utils.mostrarError("Error en la escritura del archivo.");
+			}
+		}
+
+		resultadosNoGuardados = null;
+		Utils.mostrarMensaje("Completado", "Los resultados se han guardado.");
+		actualizarTablaNoGuardados();
+	}
+
+	/**
+	 * Lee el archivo y carga los resultados en un ArrayList. Después, se cargan en
+	 * la tabla.
+	 */
+	private void cargarResultados() {
+		if (gdf == null)
+			gdf = new GestorDeFicheros();
+		try {
+			resultados = gdf.leer();
+			actualizarTablaGuardados();
+		} catch (DateTimeParseException e) {
+			Utils.mostrarError("Error en la conversión de fechas.");
+		} catch (FileNotFoundException e) {
+			Utils.mostrarError("No se ha encontrado el archivo Resultados.dat.");
+		} catch (IOException e) {
+			Utils.mostrarError("Error en la lectura del archivo.");
+		}
+	}
+
+	/**
+	 * Actualiza la tabla de resultados no guardados.
+	 */
+	private void actualizarTablaNoGuardados() {
+		modeloTablaNoGuardados.setRowCount(0);
+		
+		if (resultadosNoGuardados == null) {
+			return;
+		}
+
+		for (Resultado resultado : resultadosNoGuardados) {
+
+			String fecha = null;
+			try {
+				fecha = Utils.localDateToString(resultado.getFecha());
+			} catch (DateTimeParseException e) {
+				Utils.mostrarError("Error en la conversión de fechas.");
+			}
+
+			modeloTablaNoGuardados.addRow(new String[] { resultado.getEquipoLocal(), resultado.getEquipoVisitante(),
+					resultado.getGolesLocal() + "", resultado.getGolesVisitante() + "", resultado.getLugar(), fecha });
+		}
+	}
+
+	/**
+	 * En caso de que haya resultados, los añade en la tabla.
+	 */
+	private void actualizarTablaGuardados() {
+		if (resultados == null) {
+			Utils.mostrarError("No hay resultados cargados.");
+			return;
+		}
+
+		modeloTablaGuardados.setRowCount(0);
+
+		for (Resultado resultado : resultados) {
+
+			String fecha = null;
+			try {
+				fecha = Utils.localDateToString(resultado.getFecha());
+			} catch (DateTimeParseException e) {
+				Utils.mostrarError("Error en la conversión de fechas.");
+			}
+
+			modeloTablaGuardados.addRow(new String[] { resultado.getEquipoLocal(), resultado.getEquipoVisitante(),
+					resultado.getGolesLocal() + "", resultado.getGolesVisitante() + "", resultado.getLugar(), fecha });
+		}
+	}
+
 }
