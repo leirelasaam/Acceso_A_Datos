@@ -53,8 +53,8 @@ public class PanelMenu extends JPanel {
 
 	private GestorDeFicheros gdf = null;
 
-	public PanelMenu() {
-		initialize();
+	public PanelMenu(ActionListener actionListenerAtras) {
+		initialize(actionListenerAtras);
 		/*
 		 * Tras inicializar los componentes, se añaden los campos a un ArrayList para
 		 * facilitar el acceso.
@@ -67,7 +67,7 @@ public class PanelMenu extends JPanel {
 	/**
 	 * Inicializa el JPanel junto con sus componentes.
 	 */
-	private void initialize() {
+	private void initialize(ActionListener actionListenerAtras) {
 		setLayout(null);
 
 		JLabel lblEquipoLocal = new JLabel("Equipo local:");
@@ -136,7 +136,7 @@ public class PanelMenu extends JPanel {
 				addResultado();
 			}
 		});
-		btnAniadir.setBounds(159, 250, 155, 40);
+		btnAniadir.setBounds(50, 250, 155, 40);
 		add(btnAniadir);
 
 		JButton btnGuardar = new JButton("Guardar");
@@ -145,7 +145,7 @@ public class PanelMenu extends JPanel {
 				guardarResultados();
 			}
 		});
-		btnGuardar.setBounds(663, 250, 155, 40);
+		btnGuardar.setBounds(298, 250, 155, 40);
 		add(btnGuardar);
 
 		JButton btnCargar = new JButton("Cargar");
@@ -154,8 +154,13 @@ public class PanelMenu extends JPanel {
 				cargarResultados();
 			}
 		});
-		btnCargar.setBounds(408, 250, 155, 40);
+		btnCargar.setBounds(546, 250, 155, 40);
 		add(btnCargar);
+		
+		JButton btnSalir = new JButton("Salir");
+		btnSalir.addActionListener(actionListenerAtras);
+		btnSalir.setBounds(794, 250, 155, 40);
+		add(btnSalir);
 
 		panelResultados = new PanelResultados();
 		panelResultados.setBounds(50, 325, 900, 200);
