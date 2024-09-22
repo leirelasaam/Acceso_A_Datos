@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
+import ejercicio_1_8.vista.paneles.PanelMenu;
+
 /**
  * JFrame que contiene el panel del menú.
  */

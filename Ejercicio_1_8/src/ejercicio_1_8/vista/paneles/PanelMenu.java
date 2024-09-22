@@ -1,4 +1,4 @@
-package ejercicio_1_8.vista;
+package ejercicio_1_8.vista.paneles;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,30 +12,28 @@ import java.util.Arrays;
 import javax.swing.*;
 
 import ejercicio_1_8.controlador.GestorDeFicheros;
+import ejercicio_1_8.controlador.GestorDeValidaciones;
 import ejercicio_1_8.controlador.Utils;
 import ejercicio_1_8.modelo.Resultado;
-import ejercicio_1_8.vista.paneles.PanelResultados;
 
 /**
  * JPanel que contiene los elementos visuales de la aplicación para gestionar
  * resultados. Este panel permite al usuario introducir resultados de partidos,
- * así como guardarlos y cargarlos desde un archivo. 
+ * así como guardarlos y cargarlos desde un archivo.
  * 
- * - Los resultados se muestran en un JTabbedPane con dos pestañas:
- *   1. No Guardados: Muestra los resultados que se han añadido pero no se han guardado.
- *   2. Guardados: Muestra los resultados que se han cargado desde un archivo.
+ * - Los resultados se muestran en un JTabbedPane con dos pestañas: 1. No
+ * Guardados: Muestra los resultados que se han añadido pero no se han guardado.
+ * 2. Guardados: Muestra los resultados que se han cargado desde un archivo.
  *
- * - Los botones disponibles son:
- *   1. Añadir: Permite añadir un nuevo resultado utilizando los campos de texto.
- *   2. Guardar: Guarda todos los resultados no guardados en un archivo.
- *   3. Cargar: Carga los resultados desde un archivo y los muestra en la pestaña correspondiente.
+ * - Los botones disponibles son: 1. Añadir: Permite añadir un nuevo resultado
+ * utilizando los campos de texto. 2. Guardar: Guarda todos los resultados no
+ * guardados en un archivo. 3. Cargar: Carga los resultados desde un archivo y
+ * los muestra en la pestaña correspondiente.
  */
 public class PanelMenu extends JPanel {
 
 	private static final long serialVersionUID = -6805088280524684669L;
-	private static final int MAX_CARACTERES = 20;
-	private static final int MAX_GOLES = 99;
-	
+
 	private PanelResultados panelResultados;
 
 	private JTextField textFieldEquipoLocal;
@@ -50,8 +48,10 @@ public class PanelMenu extends JPanel {
 	// Almacena los resultados que se han añadido pero no se han guardado.
 	private ArrayList<Resultado> resultadosNoGuardados = null;
 	private ArrayList<JTextField> campos = new ArrayList<JTextField>();
+	private ArrayList<JTextField> camposTexto = new ArrayList<JTextField>();
 
 	private GestorDeFicheros gdf = null;
+	private GestorDeValidaciones gdv = null;
 
 	public PanelMenu(ActionListener actionListenerAtras) {
 		initialize(actionListenerAtras);
@@ -61,6 +61,7 @@ public class PanelMenu extends JPanel {
 		 */
 		campos.addAll(Arrays.asList(textFieldEquipoLocal, textFieldEquipoVisitante, textFieldGolesLocal,
 				textFieldGolesVisitante, textFieldLugar, textFieldFecha));
+		camposTexto.addAll(Arrays.asList(textFieldEquipoLocal, textFieldEquipoVisitante, textFieldLugar));
 
 	}
 
@@ -139,24 +140,24 @@ public class PanelMenu extends JPanel {
 		btnAniadir.setBounds(50, 250, 155, 40);
 		add(btnAniadir);
 
-		JButton btnGuardar = new JButton("Guardar");
-		btnGuardar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				guardarResultados();
-			}
-		});
-		btnGuardar.setBounds(298, 250, 155, 40);
-		add(btnGuardar);
-
 		JButton btnCargar = new JButton("Cargar");
 		btnCargar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cargarResultados();
 			}
 		});
-		btnCargar.setBounds(546, 250, 155, 40);
+		btnCargar.setBounds(298, 250, 155, 40);
 		add(btnCargar);
-		
+
+		JButton btnGuardar = new JButton("Guardar");
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardarResultados();
+			}
+		});
+		btnGuardar.setBounds(546, 250, 155, 40);
+		add(btnGuardar);
+
 		JButton btnSalir = new JButton("Salir");
 		btnSalir.addActionListener(actionListenerAtras);
 		btnSalir.setBounds(794, 250, 155, 40);
@@ -202,60 +203,23 @@ public class PanelMenu extends JPanel {
 	}
 
 	/**
-	 * Valida que los campos de texto no estén vacíos y que los campos de equipo
-	 * local, equipo visitante y lugar no excedan el límite de caracteres máximos
-	 * establecidos. También valida si los campos de goles tienen un valor numérico
-	 * con un máximo de dos dígitos. Se muestran los mensajes de error
-	 * correspondientes en caso de no pasar una validación determinada.
+	 * Valida todos los campos.
 	 * 
-	 * @return True si los campos pasan la validación y False en caso contrario.
+	 * @return True si pasan la validación y False en caso contrario.
 	 */
 	private boolean validarCampos() {
-		for (JTextField campo : campos) {
-			if (campo.getText().isEmpty()) {
-				Utils.mostrarError("Los campos no pueden estar vacíos.");
-				return false;
-			}
-		}
+		if (gdv == null)
+			gdv = new GestorDeValidaciones();
 
-		// Validación de longitud
-		if (textFieldEquipoLocal.getText().length() > MAX_CARACTERES
-				|| textFieldEquipoVisitante.getText().length() > MAX_CARACTERES
-				|| textFieldLugar.getText().length() > MAX_CARACTERES) {
-			Utils.mostrarError("Los nombres de los equipos y el lugar deben tener un máximo de " + MAX_CARACTERES
-					+ " caracteres.");
+		if (!gdv.validarCamposVacios(campos))
 			return false;
-		}
-
-		// Validar goles
-		try {
-			int golesLocal = Utils.stringToInt(textFieldGolesLocal.getText());
-			int golesVisitante = Utils.stringToInt(textFieldGolesVisitante.getText());
-
-			if (!validarGoles(golesLocal) || !validarGoles(golesVisitante)) {
-				Utils.mostrarError("Los goles deben ser entre 0 y " + MAX_GOLES + ".");
-				return false;
-			}
-		} catch (NumberFormatException e) {
-			Utils.mostrarError("Los goles deben tener un valor numérico.");
+		if (!gdv.validarLongitud(camposTexto))
 			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Valida que los goles tengan un máximo de 2 dígitos y que el valor mínimo sea
-	 * 0.
-	 * 
-	 * @param goles Número entero que indica la cantidad de goles
-	 * @return True si pasa la validación y False si no.
-	 */
-	private boolean validarGoles(int goles) {
-		if (goles < 0 || goles > MAX_GOLES) {
+		if (!gdv.validarGoles(textFieldGolesLocal, textFieldGolesVisitante))
 			return false;
-		}
-
+		if (!gdv.validarFecha(textFieldFecha))
+			return false;
+		
 		return true;
 	}
 

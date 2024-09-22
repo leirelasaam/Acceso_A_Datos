@@ -9,11 +9,13 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 /**
- * Clase que gestiona la visualización de resultados en un JTabbedPane.
+ * Gestiona la visualización de resultados en un JTabbedPane.
  */
 public class PanelResultados extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	private static final String[] CABECERA = new String[] { "Equipo local", "Equipo visitante", "Goles local",
+			"Goles visitante", "Lugar", "Fecha" };
 
 	private JTabbedPane tabbedPane;
 	private JTable tableNoGuardados;
@@ -31,9 +33,7 @@ public class PanelResultados extends JPanel {
 
 		// Panel de no guardados
 		JPanel panelNoGuardados = new JPanel();
-		modeloTablaNoGuardados = new DefaultTableModel(
-				new String[] { "Equipo local", "Equipo visitante", "Goles local", "Goles visitante", "Lugar", "Fecha" },
-				0);
+		modeloTablaNoGuardados = new DefaultTableModel(CABECERA, 0);
 		tableNoGuardados = new JTable(modeloTablaNoGuardados);
 		JScrollPane scrollPaneNoGuardados = new JScrollPane(tableNoGuardados);
 		panelNoGuardados.setLayout(new BorderLayout());
@@ -42,9 +42,7 @@ public class PanelResultados extends JPanel {
 
 		// Panel de guardados
 		JPanel panelGuardados = new JPanel();
-		modeloTablaGuardados = new DefaultTableModel(
-				new String[] { "Equipo local", "Equipo visitante", "Goles local", "Goles visitante", "Lugar", "Fecha" },
-				0);
+		modeloTablaGuardados = new DefaultTableModel(CABECERA, 0);
 		tableGuardados = new JTable(modeloTablaGuardados);
 		JScrollPane scrollPaneGuardados = new JScrollPane(tableGuardados);
 		panelGuardados.setLayout(new BorderLayout());
