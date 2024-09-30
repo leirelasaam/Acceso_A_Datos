@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tienda>
+<!-- Descripcion -->
+<nombre>Nuestra Tierra</nombre>
+<territorio>Euskal Herria</territorio>
+<actividad>Venta de Productos Locales</actividad>
+<!-- Departamento-->
+<dptos>
+<dpto id="s1">
+<nombre>Panadería</nombre>
+<responsable>Jon Garai</responsable>
+</dpto>
+<dpto id="s2">
+<nombre>Carnicería</nombre>
+<responsable>Miren Garate</responsable>
+</dpto>
+<dpto id="s3">
+<nombre>Limpieza</nombre>
+<responsable>Edurne Urra</responsable>
+</dpto>
+<dpto id="s4">
+<nombre>Frutas y Verduras</nombre>
+<responsable>Edurne Urra</responsable>
+</dpto>
+</dptos>
+<!-- Producto -->
+<productos>
+<producto id="p1" venta="s1">
+<nombre>pan</nombre>
+<precio>1.20</precio>
+</producto>
+<producto id="p2" venta="s2">
+<nombre>Chuleta de Cerdo</nombre>
+<precio>4.35</precio>
+</producto>
+<producto id="p3" venta="s3">
+<nombre>Limpiador suelos</nombre>
+<precio>1.25</precio>
+</producto>
+<producto id="p4" venta="s4">
+<nombre>Naranjas</nombre>
+<precio>1.20</precio>
+</producto>
+</productos>
+<!-- ventas-->
+<ventas>
+<venta id="S1">
+<data>2013/3/10</data>
+<producto>p1</producto>
+<cantidad>3</cantidad>
+</venta>
+<venta id="S2">
+<data>2013/4/2</data>
+<producto>p2</producto>
+<cantidad>5</cantidad>
+</venta>
+<venta id="S3">
+<data>2013/5/5</data>
+<producto>p3</producto>
+<cantidad>6</cantidad>
+</venta>
+</ventas>
+</tienda>
