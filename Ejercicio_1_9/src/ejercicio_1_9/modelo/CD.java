@@ -10,14 +10,14 @@ public class CD implements Serializable {
 	private String artista = null;
 	private String pais = null;
 	private String sello = null;
-	private double precio = 0;
-	private int anio = 0;
-	
+	private String precio = null;
+	private String anio = null;
+
 	public CD() {
 		// Constructor vacío
 	}
 
-	public CD(String titulo, String artista, String pais, String sello, double precio, int anio) {
+	public CD(String titulo, String artista, String pais, String sello, String precio, String anio) {
 		super();
 		this.titulo = titulo;
 		this.artista = artista;
@@ -59,19 +59,19 @@ public class CD implements Serializable {
 		this.sello = sello;
 	}
 
-	public double getPrecio() {
+	public String getPrecio() {
 		return precio;
 	}
 
-	public void setPrecio(double precio) {
+	public void setPrecio(String precio) {
 		this.precio = precio;
 	}
 
-	public int getAnio() {
+	public String getAnio() {
 		return anio;
 	}
 
-	public void setAnio(int anio) {
+	public void setAnio(String anio) {
 		this.anio = anio;
 	}
 
@@ -89,8 +89,8 @@ public class CD implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		CD other = (CD) obj;
-		return anio == other.anio && Objects.equals(artista, other.artista) && Objects.equals(pais, other.pais)
-				&& Double.doubleToLongBits(precio) == Double.doubleToLongBits(other.precio)
+		return Objects.equals(anio, other.anio) && Objects.equals(artista, other.artista)
+				&& Objects.equals(pais, other.pais) && Objects.equals(precio, other.precio)
 				&& Objects.equals(sello, other.sello) && Objects.equals(titulo, other.titulo);
 	}
 
@@ -98,6 +98,11 @@ public class CD implements Serializable {
 	public String toString() {
 		return "CD [titulo=" + titulo + ", artista=" + artista + ", pais=" + pais + ", sello=" + sello + ", precio="
 				+ precio + ", anio=" + anio + "]";
+	}
+
+	public String toStringFormateado() {
+		return "\tTítulo: " + titulo + "\n" + "\tArtist: " + artista + "\n" + "\tPaís: " + pais + "\n" + "\tSello: "
+				+ sello + "\n" + "\tPrecio: " + precio + "\n" + "\tAño: " + anio;
 	}
 
 }

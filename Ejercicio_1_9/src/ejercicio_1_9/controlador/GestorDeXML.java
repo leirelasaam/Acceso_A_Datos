@@ -3,6 +3,7 @@ package ejercicio_1_9.controlador;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,28 +35,18 @@ public class GestorDeXML {
 	private static final String FICHERO_NUMBER = "src//ejercicio_1_9//cds_number.xml";
 	
 	/**
-	 * Lee el fichero XML y devuelve un String formateado para mostrar la información de los CDs.
-	 * @return
+	 * Lee el fichero XML y devuelve un ArrayList con CDs.
+	 * @return ArrayList de CDs
 	 * @throws FileNotFoundException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	public String leer() throws FileNotFoundException, ParserConfigurationException, SAXException, IOException {
-		String salida = null;
-		StringBuilder sb = new StringBuilder();
+	public ArrayList<CD> leer() throws FileNotFoundException, ParserConfigurationException, SAXException, IOException {
+		ArrayList<CD> cds = null;
 		File archivo = null;
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = null;
-		
-		// Crear un mapa para emparejar elementos y valores del string a mostrar
-	    Map<String, String> elementos = new HashMap<>();
-	    elementos.put("TITLE", "Título");
-	    elementos.put("ARTIST", "Artista");
-	    elementos.put("COUNTRY", "País");
-	    elementos.put("COMPANY", "Sello");
-	    elementos.put("PRICE", "Precio");
-	    elementos.put("YEAR", "Año");
 		
 		try {
 			archivo = new File(FICHERO_ORIGINAL);
@@ -65,20 +56,26 @@ public class GestorDeXML {
 			
 			NodeList nList = doc.getElementsByTagName("CD");
 			for (int i = 0; i < nList.getLength(); i ++) {
-				sb.append("CD: " + i + "\n");
 				Node nNode = nList.item(i);
 				
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 					Element eElement = (Element) nNode;
-					for (Map.Entry<String, String> elemento : elementos.entrySet()) {
-						// Recoger el valor del nodo
-						sb.append("\t" + elemento.getValue() + ": " + eElement.getElementsByTagName(elemento.getKey()).item(0).getTextContent() + "\n");
-					}
+					// Recoger los valores del nodo
+	                String title = eElement.getElementsByTagName("TITLE").item(0).getTextContent();
+	                String artist = eElement.getElementsByTagName("ARTIST").item(0).getTextContent();
+	                String country = eElement.getElementsByTagName("COUNTRY").item(0).getTextContent();
+	                String company = eElement.getElementsByTagName("COMPANY").item(0).getTextContent();
+	                String price = eElement.getElementsByTagName("PRICE").item(0).getTextContent();
+	                String year = eElement.getElementsByTagName("YEAR").item(0).getTextContent();
+
+	                // Crear un objeto CD y añadirlo a la lista
+	                CD cd = new CD(title, artist, country, company, price, year);
+	                
+	                if(cds == null)
+	                	cds = new ArrayList<CD>();
+	                cds.add(cd);
 				}
 			}
-			
-			if (!sb.isEmpty())
-				salida = sb.toString();
 			
 		} catch (FileNotFoundException e) {
 			throw e;
@@ -89,7 +86,7 @@ public class GestorDeXML {
 		} catch (IOException e) {
 			throw e;
 		}
-		return salida; 
+		return cds; 
 	}
 	
 	/**
