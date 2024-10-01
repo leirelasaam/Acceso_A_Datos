@@ -30,7 +30,7 @@ public class Producto implements Serializable {
 		this.nombre = nombre;
 		double precioDouble = 0;
 		try {
-			precioDouble = Integer.parseInt(precio);
+			precioDouble = Double.parseDouble(precio);
 		} catch(Exception e) {
 			
 		}
@@ -90,6 +90,10 @@ public class Producto implements Serializable {
 	@Override
 	public String toString() {
 		return "Producto [id=" + id + ", venta=" + venta + ", nombre=" + nombre + ", precio=" + precio + "]";
+	}
+	
+	public String toStringPrecio() {
+		return "\t" + nombre + " - " + precio + "€";
 	}
 
 }

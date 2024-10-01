@@ -26,7 +26,7 @@
 <!-- Producto -->
 <productos>
 <producto id="p1" venta="s1">
-<nombre>pan</nombre>
+<nombre>Pan</nombre>
 <precio>1.20</precio>
 </producto>
 <producto id="p2" venta="s2">
@@ -41,23 +41,42 @@
 <nombre>Naranjas</nombre>
 <precio>1.20</precio>
 </producto>
+<producto id="p5" venta="s2">
+<nombre>Carrillera</nombre>
+<precio>10.50</precio>
+</producto>
 </productos>
 <!-- ventas-->
 <ventas>
-<venta id="S1">
+<venta id="s1">
 <data>2013/3/10</data>
 <producto>p1</producto>
 <cantidad>3</cantidad>
 </venta>
-<venta id="S2">
+<venta id="s2">
 <data>2013/4/2</data>
 <producto>p2</producto>
 <cantidad>5</cantidad>
 </venta>
-<venta id="S3">
+<venta id="s2">
+<data>2015/4/2</data>
+<producto>p5</producto>
+<cantidad>10</cantidad>
+</venta>
+<venta id="s3">
 <data>2013/5/5</data>
 <producto>p3</producto>
 <cantidad>6</cantidad>
+</venta>
+<venta id="s3">
+<data>2020/5/5</data>
+<producto>p3</producto>
+<cantidad>3</cantidad>
+</venta>
+<venta id="s3">
+<data>2021/5/5</data>
+<producto>p3</producto>
+<cantidad>3</cantidad>
 </venta>
 </ventas>
 </tienda>
