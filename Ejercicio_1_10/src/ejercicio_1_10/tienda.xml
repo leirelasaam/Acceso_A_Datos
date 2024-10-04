@@ -54,6 +54,11 @@
 <cantidad>3</cantidad>
 </venta>
 <venta id="s2">
+<data>2013/3/10</data>
+<producto>p2</producto>
+<cantidad>20</cantidad>
+</venta>
+<venta id="s2">
 <data>2013/4/2</data>
 <producto>p2</producto>
 <cantidad>5</cantidad>

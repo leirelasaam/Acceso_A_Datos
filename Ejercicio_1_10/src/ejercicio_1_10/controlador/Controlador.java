@@ -73,7 +73,7 @@ public class Controlador {
     public void ejecutarEjercicio4() {
         String nombreProducto = "Naranjas";
         try {
-            String responsable = gdx.obtenerResponsable(nombreProducto, false);
+            String responsable = gdx.obtenerResponsablePorNombreProducto(nombreProducto);
             if (responsable != null) {
                 System.out.println("> Responsable del producto " + nombreProducto + ": " + responsable);
             } else {
@@ -88,9 +88,12 @@ public class Controlador {
     public void ejecutarEjercicio5() {
         String fecha = "2013/3/10";
         try {
-            String responsable = gdx.obtenerResponsable(fecha, true);
-            if (responsable != null) {
-                System.out.println("> Responsable de la venta del " + fecha + ": " + responsable);
+            ArrayList<String> responsables = gdx.obtenerResponsablesPorFechaVenta(fecha);
+            if (responsables != null) {
+                System.out.println("> Responsables de ventas en el día " + fecha + ": ");
+                for (String responsable : responsables) {
+                	System.out.println("\t" + responsable);
+                }
             } else {
                 System.out.println("> No se ha encontrado al responsable de la venta del " + fecha);
             }

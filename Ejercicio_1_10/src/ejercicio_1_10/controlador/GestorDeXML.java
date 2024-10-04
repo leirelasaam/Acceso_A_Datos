@@ -205,7 +205,7 @@ public class GestorDeXML {
 		return productos;
 	}
 
-	public String obtenerResponsable(String dato, boolean esFecha) throws FileNotFoundException,
+	public String obtenerResponsablePorNombreProducto(String nombreProducto) throws FileNotFoundException,
 			ParserConfigurationException, SAXException, IOException, XPathExpressionException {
 		String nombre = null;
 		File archivo = null;
@@ -219,14 +219,9 @@ public class GestorDeXML {
 			db = dbf.newDocumentBuilder();
 			Document doc = db.parse(archivo);
 			doc.getDocumentElement().normalize();
-			
-			String expresionDepId = null;
-			if (!esFecha) {
-				expresionDepId = "string(//producto[nombre='" + dato + "']/@venta)";
-			} else {
-				expresionDepId = "string(//venta[data='" + dato + "']/@id)";
-			}
-			
+
+			String expresionDepId = "string(//producto[nombre='" + nombreProducto + "']/@venta)";
+
 			String depId = (String) xPath.evaluate(expresionDepId, doc, XPathConstants.STRING);
 
 			String expresionResponsable = "//dpto[@id='" + depId + "']/responsable/text()";
@@ -245,6 +240,59 @@ public class GestorDeXML {
 		}
 
 		return nombre;
+	}
+
+	public ArrayList<String> obtenerResponsablesPorFechaVenta(String fecha) throws FileNotFoundException,
+			ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+		ArrayList<String> responsables = null;
+		File archivo = null;
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = null;
+
+		XPath xPath = XPathFactory.newInstance().newXPath();
+
+		try {
+			archivo = new File(FICHERO_ORIGINAL);
+			db = dbf.newDocumentBuilder();
+			Document doc = db.parse(archivo);
+			doc.getDocumentElement().normalize();
+
+			String expresionVentas = "//venta[data='" + fecha + "']";
+			NodeList nodeList = (NodeList) xPath.evaluate(expresionVentas, doc, XPathConstants.NODESET);
+			
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				Node nNode = nodeList.item(i);
+				String depId = null;
+				String pId = null;
+
+				if (nNode != null && nNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element eElement = (Element) nNode;
+					pId = eElement.getElementsByTagName("producto").item(0).getTextContent();
+					depId = eElement.getAttribute("id");
+				}
+				
+				String expresionResponsable = "//dpto[@id='" + depId + "']/responsable/text()";
+				String nomResp = (String) xPath.evaluate(expresionResponsable, doc, XPathConstants.STRING);
+
+				if (responsables == null)
+					responsables = new ArrayList<String>();
+				
+				responsables.add("Responsable del producto con id " + pId + " - " + nomResp);
+			}
+
+		} catch (FileNotFoundException e) {
+			throw e;
+		} catch (ParserConfigurationException e) {
+			throw e;
+		} catch (SAXException e) {
+			throw e;
+		} catch (IOException e) {
+			throw e;
+		} catch (XPathExpressionException e) {
+			throw e;
+		}
+
+		return responsables;
 	}
 
 }
