@@ -21,9 +21,24 @@ import org.xml.sax.SAXException;
 
 import ejercicio_1_10.modelo.Producto;
 
+/**
+ * Clase que ejecuta expresiones XPath para obtener datos del archivo XML.
+ */
 public class GestorDeXML {
 	private static final String FICHERO_ORIGINAL = "src//ejercicio_1_10//tienda.xml";
 
+	/**
+	 * Obtiene la cantidad de ventas de un departamento, teniendo en cuenta la
+	 * propia cantidad del producto vendido.
+	 * 
+	 * @param nomDepar Nombre del departamento.
+	 * @return Número entero con el valor de las ventas, 0 en caso de que no haya.
+	 * @throws FileNotFoundException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws XPathExpressionException
+	 */
 	public int obtenerCantidadVentas(String nomDepar) throws FileNotFoundException, ParserConfigurationException,
 			SAXException, IOException, XPathExpressionException {
 		int cantidad = 0;
@@ -78,6 +93,17 @@ public class GestorDeXML {
 		return cantidad;
 	}
 
+	/**
+	 * Obtiene los productos y precios de un departamento.
+	 * 
+	 * @param nomDepar Nombre del departamento.
+	 * @return ArrayList con los productos, null si no hay productos.
+	 * @throws FileNotFoundException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws XPathExpressionException
+	 */
 	public ArrayList<Producto> obtenerProductosPorDepartamento(String nomDepar) throws FileNotFoundException,
 			ParserConfigurationException, SAXException, IOException, XPathExpressionException {
 		ArrayList<Producto> productos = null;
@@ -132,6 +158,17 @@ public class GestorDeXML {
 		return productos;
 	}
 
+	/**
+	 * Obtiene los productos por la cantidad de venta.
+	 * 
+	 * @param cantidad Número entero que se corresponde con la cantidad a buscar.
+	 * @return ArrayList de productos, null si no hay coincidencias.
+	 * @throws FileNotFoundException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws XPathExpressionException
+	 */
 	public ArrayList<Producto> obtenerProductosPorCantidad(int cantidad) throws FileNotFoundException,
 			ParserConfigurationException, SAXException, IOException, XPathExpressionException {
 		ArrayList<Producto> productos = null;
@@ -205,6 +242,18 @@ public class GestorDeXML {
 		return productos;
 	}
 
+	/**
+	 * Obtiene el nombre del responsable por nombre de producto.
+	 * 
+	 * @param nombreProducto Nombre del producto.
+	 * @return String que contiene el nombre del responsable, null si no lo
+	 *         encuentra.
+	 * @throws FileNotFoundException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws XPathExpressionException
+	 */
 	public String obtenerResponsablePorNombreProducto(String nombreProducto) throws FileNotFoundException,
 			ParserConfigurationException, SAXException, IOException, XPathExpressionException {
 		String nombre = null;
@@ -225,7 +274,10 @@ public class GestorDeXML {
 			String depId = (String) xPath.evaluate(expresionDepId, doc, XPathConstants.STRING);
 
 			String expresionResponsable = "//dpto[@id='" + depId + "']/responsable/text()";
-			nombre = (String) xPath.evaluate(expresionResponsable, doc, XPathConstants.STRING);
+			String nombreResponsable = (String) xPath.evaluate(expresionResponsable, doc, XPathConstants.STRING);
+			
+			if (nombreResponsable != null && !nombreResponsable.isEmpty())
+				nombre = nombreResponsable;
 
 		} catch (FileNotFoundException e) {
 			throw e;
@@ -242,6 +294,19 @@ public class GestorDeXML {
 		return nombre;
 	}
 
+	/**
+	 * Obtiene los nombres de los responsables de las ventas realizadas en una fecha
+	 * en concreto.
+	 * 
+	 * @param fecha String que contiene la fecha en formato yyyy/MM/dd
+	 * @return ArrayList de Strings que contiene los nombres de los responsables,
+	 *         null en caso de que no haya coincidencias.
+	 * @throws FileNotFoundException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws XPathExpressionException
+	 */
 	public ArrayList<String> obtenerResponsablesPorFechaVenta(String fecha) throws FileNotFoundException,
 			ParserConfigurationException, SAXException, IOException, XPathExpressionException {
 		ArrayList<String> responsables = null;
@@ -259,7 +324,7 @@ public class GestorDeXML {
 
 			String expresionVentas = "//venta[data='" + fecha + "']";
 			NodeList nodeList = (NodeList) xPath.evaluate(expresionVentas, doc, XPathConstants.NODESET);
-			
+
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Node nNode = nodeList.item(i);
 				String depId = null;
@@ -270,13 +335,13 @@ public class GestorDeXML {
 					pId = eElement.getElementsByTagName("producto").item(0).getTextContent();
 					depId = eElement.getAttribute("id");
 				}
-				
+
 				String expresionResponsable = "//dpto[@id='" + depId + "']/responsable/text()";
 				String nomResp = (String) xPath.evaluate(expresionResponsable, doc, XPathConstants.STRING);
 
 				if (responsables == null)
 					responsables = new ArrayList<String>();
-				
+
 				responsables.add("Responsable del producto con id " + pId + " - " + nomResp);
 			}
 
