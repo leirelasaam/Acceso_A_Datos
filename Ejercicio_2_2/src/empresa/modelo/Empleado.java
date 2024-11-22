@@ -122,13 +122,17 @@ public class Empleado implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Empleado:\n\temp_no=" + emp_no + "\n\tapellido=" + apellido + "\n\toficio=" + oficio + "\n\tdir=" + dir
-				+ "\n\tfecha_alt=" + fecha_alt + "\n\tsalario=" + salario + "\n\tcomision=" + comision + "\n\tdepartamento="
+		return "ID: " + emp_no + "\nApellido: " + apellido + "\nOficio: " + oficio + "\nID Director: " + dir
+				+ "\nFecha de alta: " + fecha_alt + "\nSalario: " + salario + "€\nComisión: " + comision + "€\nDepartamento: "
 				+ departamento;
 	}
 	
-	public String toStringCamposEjer2() {
-		return "Empleado:\n\tapellido=" + apellido + "\n\toficio=" + oficio + "\n\tsalario=" + salario;
+	public String toStringEjer2() {
+		return "Apellido: " + apellido + "\nOficio: " + oficio + "\nSalario: " + salario + "€";
+	}
+	
+	public String toStringEjer3() {
+		return "Apellido: " + apellido + "\nSalario: " + salario + "€\nDepartamento: " + departamento;
 	}
 
 }

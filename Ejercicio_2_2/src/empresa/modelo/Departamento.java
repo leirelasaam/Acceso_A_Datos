@@ -63,7 +63,7 @@ public class Departamento implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Departamento:\n\tdept_no=" + dept_no + "\n\tdnombre=" + dnombre + "\n\tloc=" + loc;
+		return "ID del departamento: " + dept_no + "\nNombre del departamento: " + dnombre + "\nLocalidad: " + loc;
 	}
 
 }

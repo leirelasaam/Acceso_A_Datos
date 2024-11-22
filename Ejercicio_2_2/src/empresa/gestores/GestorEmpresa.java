@@ -35,6 +35,17 @@ public class GestorEmpresa {
 
 		return empleados;
 	}
+	
+	public Empleado obtenerEmpleadoConSalMax() {
+		Empleado empleado = null;
+
+		if (null == gEmple)
+			gEmple = new GestorEmpleados();
+
+		empleado = gEmple.buscarConMaxSalario();
+
+		return empleado;
+	}
 
 	public void imprimirDepartamento(Departamento d) {
 		if (d != null) {
@@ -46,7 +57,7 @@ public class GestorEmpresa {
 	public void imprimirDepartamentos(ArrayList<Departamento> dptos) {
 		if (dptos != null) {
 			System.out.println("*******************");
-			System.out.println("   DEPARTAMENTOS   ");
+			System.out.println("*  DEPARTAMENTOS  *");
 			System.out.println("*******************");
 			for (Departamento d : dptos) {
 				imprimirDepartamento(d);
@@ -60,7 +71,10 @@ public class GestorEmpresa {
 		if (e != null) {
 			switch (formatToString) {
 			case 2:
-				System.out.println(e.toStringCamposEjer2());
+				System.out.println(e.toStringEjer2());
+				break;
+			case 3:
+				System.out.println(e.toStringEjer3());
 				break;
 			default: 
 				System.out.println(e.toString());
@@ -73,7 +87,7 @@ public class GestorEmpresa {
 	public void imprimirEmpleados(ArrayList<Empleado> empleados, int formatToString) {
 		if (empleados != null) {
 			System.out.println("*******************");
-			System.out.println("   Empleados   ");
+			System.out.println("*    EMPLEADOS    *");
 			System.out.println("*******************");
 			for (Empleado e : empleados) {
 				imprimirEmpleado(e, formatToString);
