@@ -132,7 +132,7 @@ public class Empleado implements Serializable {
 	}
 	
 	public String toStringEjer3() {
-		return "Apellido: " + apellido + "\nSalario: " + salario + "€\nDepartamento: " + departamento;
+		return "EMPLEADO:\nApellido: " + apellido + "\nSalario: " + salario + "€\nDEPARTAMENTO:\n" + departamento;
 	}
 
 }

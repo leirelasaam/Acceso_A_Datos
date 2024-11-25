@@ -15,9 +15,9 @@ public class Departamento implements Serializable {
 	private int dept_no = 0;
 	private String dnombre = null;
 	private String loc = null;
-	
+
 	public Departamento() {
-		
+
 	}
 
 	public int getDept_no() {

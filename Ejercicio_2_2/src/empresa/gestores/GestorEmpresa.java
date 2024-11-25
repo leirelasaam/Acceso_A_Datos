@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import empresa.modelo.Departamento;
 import empresa.modelo.Empleado;
 
+/**
+ * Gestiona la obtención de los datos de la bbdd y cómo se presentan los mismos.
+ */
 public class GestorEmpresa {
 
 	private GestorEmpleados gEmple = null;
@@ -14,35 +17,35 @@ public class GestorEmpresa {
 
 	}
 
-	public ArrayList<Departamento> obtenerDepartamentos() {
+	public ArrayList<Departamento> obtenerDepartamentos(boolean esProcedimiento) {
 		ArrayList<Departamento> dptos = null;
 
 		if (null == gDep)
 			gDep = new GestorDepartamentos();
 
-		dptos = gDep.buscarTodosLosDepartamentos();
+		dptos = gDep.buscarTodosLosDepartamentos(esProcedimiento);
 
 		return dptos;
 	}
 
-	public ArrayList<Empleado> obtenerEmpleadosPorDepartamento(int dept_no) {
+	public ArrayList<Empleado> obtenerEmpleadosPorDepartamento(int dept_no, boolean esProcedimiento) {
 		ArrayList<Empleado> empleados = null;
 
 		if (null == gEmple)
 			gEmple = new GestorEmpleados();
 
-		empleados = gEmple.buscarEmpleadosPorDepartamento(dept_no);
+		empleados = gEmple.buscarEmpleadosPorDepartamento(dept_no, esProcedimiento);
 
 		return empleados;
 	}
-	
-	public Empleado obtenerEmpleadoConSalMax() {
+
+	public Empleado obtenerEmpleadoConSalMax(boolean esProcedimiento) {
 		Empleado empleado = null;
 
 		if (null == gEmple)
 			gEmple = new GestorEmpleados();
 
-		empleado = gEmple.buscarConMaxSalario();
+		empleado = gEmple.buscarConMaxSalario(esProcedimiento);
 
 		return empleado;
 	}
@@ -76,7 +79,7 @@ public class GestorEmpresa {
 			case 3:
 				System.out.println(e.toStringEjer3());
 				break;
-			default: 
+			default:
 				System.out.println(e.toString());
 				break;
 			}

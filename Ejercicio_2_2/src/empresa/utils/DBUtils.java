@@ -1,7 +1,10 @@
 package empresa.utils;
 
+/**
+ * Contiene los datos para manejar la conexión de la bbdd.
+ */
 public class DBUtils {
-	
+
 	private static final String DB = "leire";
 	private static final String PORT = "3305";
 	public static final String URL = "jdbc:mysql://localhost:" + PORT + "/" + DB;
