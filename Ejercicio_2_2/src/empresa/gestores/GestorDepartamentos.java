@@ -40,7 +40,6 @@ public class GestorDepartamentos {
 		ResultSet resultSet = null;
 
 		try {
-			Class.forName(DBUtils.DRIVER);
 			connection = DriverManager.getConnection(DBUtils.URL, DBUtils.USER, DBUtils.PASS);
 
 			// Castear al statement concreto

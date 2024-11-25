@@ -53,7 +53,6 @@ public class GestorEmpleados {
 		ResultSet resultSet = null;
 
 		try {
-			Class.forName(DBUtils.DRIVER);
 			connection = DriverManager.getConnection(DBUtils.URL, DBUtils.USER, DBUtils.PASS);
 
 			if (esProcedimiento) {
@@ -135,7 +134,6 @@ public class GestorEmpleados {
 		ResultSet resultSet = null;
 
 		try {
-			Class.forName(DBUtils.DRIVER);
 			connection = DriverManager.getConnection(DBUtils.URL, DBUtils.USER, DBUtils.PASS);
 
 			if (esProcedimiento) {
