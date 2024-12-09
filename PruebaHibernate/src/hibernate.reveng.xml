@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+<table catalog="leire" name="departamentos">
+	<column name="dept_no"></column>
+	<column name="dnombre"></column>
+	<column name="loc"></column>
+</table>
+<table catalog="leire" name="empleados">
+	<column name="emp_no"></column>
+	<column name="apellido"></column>
+	<column name="oficio"></column>
+	<column name="dir"></column>
+	<column name="fecha_alt"></column>
+	<column name="salario"></column>
+	<column name="comision"></column>
+	<column name="dept_no"></column>
+</table>
+</hibernate-reverse-engineering>
