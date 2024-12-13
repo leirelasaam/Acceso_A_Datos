@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Generated 9 dic 2024, 16:42:08 by Hibernate Tools 6.5.1.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class catalog="leire" name="prueba.Departamentos" optimistic-lock="none" table="departamentos">
+    <class catalog="leire" name="pojos.Departamentos" optimistic-lock="none" table="departamentos">
         <id name="deptNo" type="byte">
             <column name="dept_no"/>
             <generator class="assigned"/>
@@ -16,7 +16,7 @@
             <key>
                 <column name="dept_no" not-null="true"/>
             </key>
-            <one-to-many class="prueba.Empleados"/>
+            <one-to-many class="pojos.Empleados"/>
         </set>
     </class>
 </hibernate-mapping>

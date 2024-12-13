@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Generated 9 dic 2024, 16:42:08 by Hibernate Tools 6.5.1.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class catalog="leire" name="prueba.Empleados" optimistic-lock="none" table="empleados">
+    <class catalog="leire" name="pojos.Empleados" optimistic-lock="none" table="empleados">
         <id name="empNo" type="short">
             <column name="emp_no"/>
             <generator class="assigned"/>
         </id>
-        <many-to-one class="prueba.Departamentos" fetch="select" name="departamentos">
+        <many-to-one class="pojos.Departamentos" fetch="select" name="departamentos">
             <column name="dept_no" not-null="true"/>
         </many-to-one>
         <property name="apellido" type="string">

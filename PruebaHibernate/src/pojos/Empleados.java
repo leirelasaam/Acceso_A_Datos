@@ -1,4 +1,4 @@
-package prueba;
+package pojos;
 // Generated 9 dic 2024, 16:42:08 by Hibernate Tools 6.5.1.Final
 
 import java.sql.Date;
@@ -8,6 +8,7 @@ import java.sql.Date;
  */
 public class Empleados implements java.io.Serializable {
 
+	private static final long serialVersionUID = 830999542468267333L;
 	private short empNo;
 	private Departamentos departamentos;
 	private String apellido;
@@ -100,5 +101,23 @@ public class Empleados implements java.io.Serializable {
 	public void setComision(Float comision) {
 		this.comision = comision;
 	}
+	
+	@Override
+	public String toString() {
+		return "Empleados [empNo=" + empNo + ", departamentos=" + departamentos + ", apellido=" + apellido + ", oficio="
+				+ oficio + ", dir=" + dir + ", fechaAlt=" + fechaAlt + ", salario=" + salario + ", comision=" + comision
+				+ "]";
+	}
+	
+	public String toStringFormat1() {
+		return "EMPLEADO\n\tApellido: " + apellido + "\n\tOficio: " + oficio + "\n\tSalario: " + salario + "€";
+	}
 
+	public String toStringFormat2() {
+		return "EMPLEADO\n\tApellido: " + apellido + "\n\tSalario: " + salario + "€";
+	}
+	
+	public String toStringFormat3() {
+		return "EMPLEADO\n\tApellido: " + apellido + "\n\tSalario: " + salario + "€\n\tFecha de alta: " + fechaAlt;
+	}
 }

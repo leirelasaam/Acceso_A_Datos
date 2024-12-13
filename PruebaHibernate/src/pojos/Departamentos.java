@@ -1,4 +1,4 @@
-package prueba;
+package pojos;
 // Generated 9 dic 2024, 16:42:08 by Hibernate Tools 6.5.1.Final
 
 import java.util.HashSet;
@@ -9,6 +9,7 @@ import java.util.Set;
  */
 public class Departamentos implements java.io.Serializable {
 
+	private static final long serialVersionUID = -4116170137649720511L;
 	private byte deptNo;
 	private String dnombre;
 	private String loc;
@@ -60,4 +61,13 @@ public class Departamentos implements java.io.Serializable {
 		this.empleadoses = empleadoses;
 	}
 
+	@Override
+	public String toString() {
+		return "Departamentos [deptNo=" + deptNo + ", dnombre=" + dnombre + ", loc=" + loc + ", empleadoses="
+				+ empleadoses + "]";
+	}
+	
+	public String toStringFormat1() {
+		return "DEPARTAMENTO\n\tNúmero: " + deptNo + "\n\tNombre: " + dnombre + "\n\tLocalidad: " + loc;
+	}
 }

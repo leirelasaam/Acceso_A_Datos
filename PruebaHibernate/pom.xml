@@ -12,15 +12,9 @@
 			<version>5.1.48</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
+			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.1.0.Final</version>
-			<exclusions>
-				<exclusion>
-					<groupId>xml-apis</groupId>
-					<artifactId>xml-apis</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>6.6.3.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.istack</groupId>

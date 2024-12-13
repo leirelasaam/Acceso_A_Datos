@@ -2,35 +2,38 @@ package gestor;
 
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
-import prueba.Departamentos;
-import utils.HibernateUtil;
+import pojos.Departamentos;
 
 public class GestorDepartamentos {
 
-	public GestorDepartamentos() {
-		
+	SessionFactory sesion = null;
+
+	public GestorDepartamentos(SessionFactory sesion) {
+		this.sesion = sesion;
 	}
-	
-	public void mostrarDepPorLocYNombre(String loc, String nombre) {
-        SessionFactory sesion = HibernateUtil.getSessionFactory();
-        Session session = sesion.openSession();
-        String hql = "from Departamentos as depar where depar.loc = '" + loc + "' and depar.dnombre = '" + nombre + "'";
-        Query q = session.createQuery(hql);
-        List<?> filas = q.list();
 
-        for (int i = 0; i < filas.size(); i++) {
-                Departamentos dep = (Departamentos) filas.get(i);
+	public void mostrarDepPorNombres(String[] dnombres) {
+		Session session = sesion.openSession();
+		String hql = "FROM Departamentos as D WHERE D.dnombre IN(:dnombres)";
+		Query q = session.createQuery(hql);
+		// Parameter list para varios valores, una colección
+		q.setParameterList("dnombres", dnombres);
+		List<?> filas = q.list();
 
-                System.out.println(dep.getDeptNo());
-                System.out.println(dep.getDnombre());
-                System.out.println(dep.getLoc());
-        }
-        
-        session.close();
-        //sesion.close();
+		System.out.println("*** VISUALIZAR DATOS DE DEPARTAMENTOS ***");
+		if (filas.size() > 0) {
+			for (int i = 0; i < filas.size(); i++) {
+				Departamentos dep = (Departamentos) filas.get(i);
+				System.out.println(dep.toStringFormat1());
+			}
+		} else {
+			System.out.println("> No hay departamentos.");
+		}
+
+		session.close();
 	}
 }
