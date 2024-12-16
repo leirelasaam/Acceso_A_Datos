@@ -120,4 +120,9 @@ public class Empleados implements java.io.Serializable {
 	public String toStringFormat3() {
 		return "EMPLEADO\n\tApellido: " + apellido + "\n\tSalario: " + salario + "€\n\tFecha de alta: " + fechaAlt;
 	}
+	
+	public String toStringFormat4() {
+		comision = comision == null ? 0 : comision;
+		return "EMPLEADO\n\tApellido: " + apellido + "\n\tSalario: " + salario + "€\n\tComision: " + comision + "€\n\tFecha de alta: " + fechaAlt + "\n\tDirector: " + dir + "\n\tDepartamento: " + departamentos.toStringFormat2();
+	}
 }

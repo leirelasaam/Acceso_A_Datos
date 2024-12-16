@@ -13,7 +13,7 @@ public class Departamentos implements java.io.Serializable {
 	private byte deptNo;
 	private String dnombre;
 	private String loc;
-	private Set empleadoses = new HashSet(0);
+	private Set<?> empleadoses = new HashSet(0);
 
 	public Departamentos() {
 	}
@@ -22,7 +22,7 @@ public class Departamentos implements java.io.Serializable {
 		this.deptNo = deptNo;
 	}
 
-	public Departamentos(byte deptNo, String dnombre, String loc, Set empleadoses) {
+	public Departamentos(byte deptNo, String dnombre, String loc, Set<?> empleadoses) {
 		this.deptNo = deptNo;
 		this.dnombre = dnombre;
 		this.loc = loc;
@@ -53,11 +53,11 @@ public class Departamentos implements java.io.Serializable {
 		this.loc = loc;
 	}
 
-	public Set getEmpleadoses() {
+	public Set<?> getEmpleadoses() {
 		return this.empleadoses;
 	}
 
-	public void setEmpleadoses(Set empleadoses) {
+	public void setEmpleadoses(Set<?> empleadoses) {
 		this.empleadoses = empleadoses;
 	}
 
@@ -69,5 +69,9 @@ public class Departamentos implements java.io.Serializable {
 	
 	public String toStringFormat1() {
 		return "DEPARTAMENTO\n\tNúmero: " + deptNo + "\n\tNombre: " + dnombre + "\n\tLocalidad: " + loc;
+	}
+	
+	public String toStringFormat2() {
+		return "\n\t\tNúmero: " + deptNo + "\n\t\tNombre: " + dnombre + "\n\t\tLocalidad: " + loc;
 	}
 }

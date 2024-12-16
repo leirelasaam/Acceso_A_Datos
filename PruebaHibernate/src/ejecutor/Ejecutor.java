@@ -1,6 +1,7 @@
 package ejecutor;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import org.hibernate.SessionFactory;
 
@@ -14,6 +15,8 @@ public class Ejecutor {
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		GestorEmpleados ge = new GestorEmpleados(sesion);
 		GestorDepartamentos gd = new GestorDepartamentos(sesion);
+		
+		System.out.println("***** PARTE 1: Consultas *****");
 		
 		// Datos de los emepleados por número de departamento
 		byte deptNo = 10;
@@ -48,6 +51,29 @@ public class Ejecutor {
 		
 		loc = "BARCELONA";
 		ge.obtenerEmpleadosPorLocalidadOrdenadosPorSalario(loc, 1);
+		
+		System.out.println("***** PARTE 2: Operaciones *****");
+		
+		dnombre = "INFORMATICA";
+		loc = "BILBAO";
+		//gd.insertarDepartamento(dnombre, loc);
+		
+		String apellido = "LASA";
+		dnombre = "INFORMATICA";
+		short dir = 0;
+		float salario = 2300;
+		float comision = 1000;
+		fecha = Date.valueOf(LocalDate.now());
+		//ge.insertarEmpleado(apellido, oficio, dir, fecha, salario, comision, dnombre);
+		
+		apellido = "GIL";
+		salario = 1300;
+		// Fecha de ayer
+		fecha = Date.valueOf(LocalDate.now().minusDays(1));
+		ge.modificarSalarioYFechaAltPorApellido(apellido, salario, fecha);
+		
+		System.out.println("*** PRUEBA DE BORRADO ***");
+		ge.eliminarPorLocDepartamento("MADRID");
 		
 		// Cerrar la sesión
 		sesion.close();
