@@ -9,6 +9,7 @@ import utils.HibernateUtil;
 
 /**
  * Clase que ejecuta la aplicación.
+ * @author Leire Lasa
  */
 public class Ejecutor {
 
