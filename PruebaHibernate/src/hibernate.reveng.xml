@@ -2,12 +2,12 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
-<table catalog="leire" name="departamentos">
+<table catalog="empresa" name="departamentos">
 	<column name="dept_no"></column>
 	<column name="dnombre"></column>
 	<column name="loc"></column>
 </table>
-<table catalog="leire" name="empleados">
+<table catalog="empresa" name="empleados">
 	<column name="emp_no"></column>
 	<column name="apellido"></column>
 	<column name="oficio"></column>

@@ -8,8 +8,13 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import pojos.Departamentos;
+import utils.DBQueries;
 import utils.HibernateUtil;
 
+/**
+ * Clase que contiene los métodos para realizar consultas u operaciones
+ * relacionadas con la tabla Departamentos.
+ */
 public class GestorDepartamentos {
 
 	SessionFactory sesion = null;
@@ -18,18 +23,18 @@ public class GestorDepartamentos {
 		this.sesion = sesion;
 	}
 
-	public void mostrarDepPorNombres(String[] dnombres) {
+	protected void mostrarDepPorNombres(String[] dnombres) {
 		Session session = sesion.openSession();
-		String hql = "FROM Departamentos as D WHERE D.dnombre IN(:dnombres)";
-		Query q = session.createQuery(hql);
+		String hql = DBQueries.DS_POR_NOM;
+		Query<Departamentos> q = session.createQuery(hql, Departamentos.class);
 		// Parameter list para varios valores, una colección
 		q.setParameterList("dnombres", dnombres);
-		List<?> filas = q.list();
+		List<Departamentos> filas = q.list();
 
 		System.out.println("*** VISUALIZAR DATOS DE DEPARTAMENTOS ***");
 		if (filas.size() > 0) {
 			for (int i = 0; i < filas.size(); i++) {
-				Departamentos dep = (Departamentos) filas.get(i);
+				Departamentos dep = filas.get(i);
 				System.out.println(dep.toStringFormat1());
 			}
 		} else {
@@ -43,12 +48,12 @@ public class GestorDepartamentos {
 		byte num = 0;
 
 		Session session = sesion.openSession();
-		String hql = "FROM Departamentos as D WHERE D.deptNo = (SELECT MAX(DE.deptNo) FROM Departamentos as DE)";
-		Query q = session.createQuery(hql);
-		List<?> filas = q.list();
+		String hql = DBQueries.MAX_D;
+		Query<Departamentos> q = session.createQuery(hql, Departamentos.class);
+		List<Departamentos> filas = q.list();
 
 		if (filas.size() > 0) {
-			Departamentos dep = (Departamentos) filas.get(0);
+			Departamentos dep = filas.get(0);
 			num = (byte) (dep.getDeptNo() + 10);
 		}
 		session.close();
@@ -56,8 +61,7 @@ public class GestorDepartamentos {
 		return num;
 	}
 	
-	@SuppressWarnings("deprecation")
-	public void insertarDepartamento(String dnombre, String loc) {
+	protected void insertarDepartamento(String dnombre, String loc) {
 	    SessionFactory sesion = HibernateUtil.getSessionFactory();
 	    Session session = null;
 	    Transaction tx = null;
@@ -78,7 +82,8 @@ public class GestorDepartamentos {
 	        d.setLoc(loc);
 	        d.setEmpleadoses(null);
 
-	        session.save(d);
+	        // SAVE está deprecated, se recomienda usar PERSIST
+	        session.persist(d);
 
 	        // Si falla el commit se va a la excepción
 	        tx.commit();
@@ -94,19 +99,18 @@ public class GestorDepartamentos {
 	    }
 	}
 	
-	public Departamentos obtenerDepartamentoPorNombre(String dnombre) {
+	protected Departamentos obtenerDepartamentoPorNombre(String dnombre) {
 		Departamentos d = null;
 
 		Session session = sesion.openSession();
-		String hql = "FROM Departamentos as D WHERE D.dnombre = :dnombre";
-		Query q = session.createQuery(hql);
+		String hql = DBQueries.D_POR_NOM;
+		Query<Departamentos> q = session.createQuery(hql, Departamentos.class);
 		q.setParameter("dnombre", dnombre);
-		List<?> filas = q.list();
 		q.setMaxResults(1);
+		
+		// No obtener como lista, ya que solo debe devolver uno o null
+		d = q.uniqueResult();
 
-		if (filas.size() > 0) {
-			d = (Departamentos) filas.get(0);
-		}
 		session.close();
 
 		return d;

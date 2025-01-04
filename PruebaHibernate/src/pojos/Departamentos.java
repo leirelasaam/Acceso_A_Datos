@@ -1,7 +1,6 @@
 package pojos;
 // Generated 9 dic 2024, 16:42:08 by Hibernate Tools 6.5.1.Final
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -13,7 +12,7 @@ public class Departamentos implements java.io.Serializable {
 	private byte deptNo;
 	private String dnombre;
 	private String loc;
-	private Set<?> empleadoses = new HashSet(0);
+	private Set<Empleados> empleadoses;
 
 	public Departamentos() {
 	}
@@ -22,7 +21,7 @@ public class Departamentos implements java.io.Serializable {
 		this.deptNo = deptNo;
 	}
 
-	public Departamentos(byte deptNo, String dnombre, String loc, Set<?> empleadoses) {
+	public Departamentos(byte deptNo, String dnombre, String loc, Set<Empleados> empleadoses) {
 		this.deptNo = deptNo;
 		this.dnombre = dnombre;
 		this.loc = loc;
@@ -57,7 +56,7 @@ public class Departamentos implements java.io.Serializable {
 		return this.empleadoses;
 	}
 
-	public void setEmpleadoses(Set<?> empleadoses) {
+	public void setEmpleadoses(Set<Empleados> empleadoses) {
 		this.empleadoses = empleadoses;
 	}
 

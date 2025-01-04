@@ -1,7 +1,7 @@
 package gestor;
 
 import java.sql.Date;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,8 +12,12 @@ import org.hibernate.query.Query;
 
 import pojos.Departamentos;
 import pojos.Empleados;
-import utils.HibernateUtil;
+import utils.DBQueries;
 
+/**
+ * Clase que contiene los métodos para realizar consultas u operaciones
+ * relacionadas con la tabla Empleados.
+ */
 public class GestorEmpleados {
 
 	SessionFactory sesion = null;
@@ -22,18 +26,18 @@ public class GestorEmpleados {
 		this.sesion = sesion;
 	}
 
-	public void obtenerEmpleadosPorDeptNo(byte deptNo) {
+	protected void obtenerEmpleadosPorDeptNo(byte deptNo) {
 		Session session = sesion.openSession();
-		String hql = "FROM Empleados as E WHERE E.departamentos.deptNo = :deptNo";
-		Query q = session.createQuery(hql);
+		String hql = DBQueries.E_POR_DEPTNO;
+		Query<Empleados> q = session.createQuery(hql, Empleados.class);
 		q.setParameter("deptNo", deptNo);
-		List<?> filas = q.list();
+		List<Empleados> filas = q.list();
 
 		System.out.println("*** EMPLEADOS DEL DEPARTAMENTO " + deptNo + " ***");
 
 		if (filas.size() > 0) {
 			for (int i = 0; i < filas.size(); i++) {
-				Empleados e = (Empleados) filas.get(i);
+				Empleados e = filas.get(i);
 				System.out.println(e.toStringFormat1());
 			}
 		} else {
@@ -43,17 +47,18 @@ public class GestorEmpleados {
 		session.close();
 	}
 
-	public void obtenerEmpleadoSalMax() {
+	protected void obtenerEmpleadoSalMax() {
 		Session session = sesion.openSession();
-		String hql = "FROM Empleados as E ORDER BY E.salario DESC";
-		Query q = session.createQuery(hql);
+		String hql = DBQueries.SAL_MAX;
+		Query<Empleados> q = session.createQuery(hql, Empleados.class);
 		q.setMaxResults(1);
-		List<?> filas = q.list();
+
+		// No obtener como lista, ya que solo puede devolver uno o null
+		Empleados e = q.uniqueResult();
 
 		System.out.println("*** EMPLEADO CON MAYOR SALARIO ***");
 
-		if (filas.size() > 0) {
-			Empleados e = (Empleados) filas.get(0);
+		if (e != null) {
 			System.out.println(e.toStringFormat2());
 			System.out.println(e.getDepartamentos().toStringFormat1());
 		} else {
@@ -63,18 +68,18 @@ public class GestorEmpleados {
 		session.close();
 	}
 
-	public void obtenerEmpleadosPorDnombreYOficio(String dnombre, String oficio) {
+	protected void obtenerEmpleadosPorDnombreYOficio(String dnombre, String oficio) {
 		Session session = sesion.openSession();
-		String hql = "FROM Empleados as E WHERE E.departamentos.dnombre = :dnombre AND E.oficio  = :oficio";
-		Query q = session.createQuery(hql);
+		String hql = DBQueries.E_POR_DNOM_Y_OF;
+		Query<Empleados> q = session.createQuery(hql, Empleados.class);
 		q.setParameter("dnombre", dnombre).setParameter("oficio", oficio);
-		List<?> filas = q.list();
+		List<Empleados> filas = q.list();
 
 		System.out.println("*** EMPLEADOS DEL DEPARTAMENTO " + dnombre + " Y OFICIO " + oficio + " ***");
 
 		if (filas.size() > 0) {
 			for (int i = 0; i < filas.size(); i++) {
-				Empleados e = (Empleados) filas.get(i);
+				Empleados e = filas.get(i);
 				System.out.println(e.toStringFormat2());
 			}
 		} else {
@@ -84,18 +89,18 @@ public class GestorEmpleados {
 		session.close();
 	}
 
-	public void obtenerEmpleadosPorFechAlt(Date fecha) {
+	protected void obtenerEmpleadosPorFechAlt(Date fecha) {
 		Session session = sesion.openSession();
-		String hql = "FROM Empleados as E WHERE E.fechaAlt = :fechaAlt";
-		Query q = session.createQuery(hql);
+		String hql = DBQueries.E_POR_FECHA;
+		Query<Empleados> q = session.createQuery(hql, Empleados.class);
 		q.setParameter("fechaAlt", fecha);
-		List<?> filas = q.list();
+		List<Empleados> filas = q.list();
 
 		System.out.println("*** EMPLEADOS CON FECHA DE ALTA " + fecha + " ***");
 
 		if (filas.size() > 0) {
 			for (int i = 0; i < filas.size(); i++) {
-				Empleados e = (Empleados) filas.get(i);
+				Empleados e = filas.get(i);
 				System.out.println(e.toStringFormat2());
 			}
 		} else {
@@ -105,7 +110,7 @@ public class GestorEmpleados {
 		session.close();
 	}
 
-	public void obtenerEmpleadosPorLocalidadOrdenadosPorSalario(String loc, int limite) {
+	protected void obtenerEmpleadosPorLocalidadOrdenadosPorSalario(String loc, int limite) {
 		Session session = sesion.openSession();
 
 		String limit = null;
@@ -114,16 +119,16 @@ public class GestorEmpleados {
 		else
 			limit = " LIMIT " + limite;
 
-		String hql = "FROM Empleados as E WHERE E.departamentos.loc = :loc ORDER BY E.salario DESC" + limit;
-		Query q = session.createQuery(hql);
+		String hql = DBQueries.E_POR_LOC_OR + limit;
+		Query<Empleados> q = session.createQuery(hql, Empleados.class);
 		q.setParameter("loc", loc);
-		List<?> filas = q.list();
+		List<Empleados> filas = q.list();
 
 		System.out.println("*** EMPLEADOS DEL DEPARTAMENTO DE " + loc + " ***");
 
 		if (filas.size() > 0) {
 			for (int i = 0; i < filas.size(); i++) {
-				Empleados e = (Empleados) filas.get(i);
+				Empleados e = filas.get(i);
 				System.out.println(e.toStringFormat1());
 			}
 		} else {
@@ -133,18 +138,19 @@ public class GestorEmpleados {
 		session.close();
 	}
 
-	public void obtenerDirectorEmpleMaxComision() {
+	protected void obtenerDirectorEmpleMaxComision() {
 		Session session = sesion.openSession();
-		String hql = "FROM Empleados as E WHERE E.empNo = (SELECT EM.dir FROM Empleados as EM WHERE EM.comision IS NOT NULL ORDER BY EM.comision DESC LIMIT 1)";
-		Query q = session.createQuery(hql);
-		List<?> filas = q.list();
+		String hql = DBQueries.DIR_EMPLE_COM_MAX;
+		Query<Empleados> q = session.createQuery(hql, Empleados.class);
 		q.setMaxResults(1);
+
+		// No obtener como lista, ya que solo puede devolver uno o null
+		Empleados e = q.uniqueResult();
 
 		System.out.println("*** DIRECTOR DEL EMPLEADO CON MAYOR COMISIÓN ***");
 
-		if (filas.size() > 0) {
-			Empleados e = (Empleados) filas.get(0);
-			System.out.println(e.toStringFormat1());
+		if (e != null) {
+			System.out.println(e.toStringFormat3());
 		} else {
 			System.out.println("> No hay empleados.");
 		}
@@ -156,12 +162,12 @@ public class GestorEmpleados {
 		short num = 0;
 
 		Session session = sesion.openSession();
-		String hql = "FROM Empleados as E WHERE E.empNo = (SELECT MAX(EM.empNo) FROM Empleados as EM)";
-		Query q = session.createQuery(hql);
-		List<?> filas = q.list();
+		String hql = DBQueries.MAX_E;
+		Query<Empleados> q = session.createQuery(hql, Empleados.class);
+		List<Empleados> filas = q.list();
 
 		if (filas.size() > 0) {
-			Empleados dep = (Empleados) filas.get(0);
+			Empleados dep = filas.get(0);
 			num = (short) (dep.getEmpNo() + 1);
 		}
 		session.close();
@@ -169,8 +175,7 @@ public class GestorEmpleados {
 		return num;
 	}
 
-	@SuppressWarnings("deprecation")
-	public void insertarEmpleado(String apellido, String oficio, short dir, Date fechaAlt, float salario,
+	protected void insertarEmpleado(String apellido, String oficio, short dir, Date fechaAlt, float salario,
 			float comision, String dnombre) {
 		Session session = null;
 		Transaction tx = null;
@@ -198,13 +203,14 @@ public class GestorEmpleados {
 			// Obtener el departamento por nombre
 			GestorDepartamentos gd = new GestorDepartamentos(sesion);
 			Departamentos d = gd.obtenerDepartamentoPorNombre(dnombre);
-			
+
 			if (d == null)
 				throw new Exception("No se ha encontrado el departamento " + dnombre);
-			
+
 			e.setDepartamentos(d);
 
-			session.save(e);
+			// SAVE está deprecated, se recomienda usar PERSIST
+			session.persist(e);
 
 			// Si falla el commit se va a la excepción
 			tx.commit();
@@ -219,45 +225,44 @@ public class GestorEmpleados {
 			}
 		}
 	}
-	
-	private Empleados obtenerEmpleadoPorApellido(String apellido) {
+
+	protected Empleados obtenerEmpleadoPorApellido(String apellido) {
 		Empleados e = null;
 
 		Session session = sesion.openSession();
-		String hql = "FROM Empleados as E WHERE E.apellido = :apellido";
-		Query q = session.createQuery(hql);
+		String hql = DBQueries.E_POR_APE;
+		Query<Empleados> q = session.createQuery(hql, Empleados.class);
 		q.setParameter("apellido", apellido);
-		List<?> filas = q.list();
 		q.setMaxResults(1);
 
-		if (filas.size() > 0) {
-			e = (Empleados) filas.get(0);
-		}
+		// No obtener como lista, ya que solo puede devolver uno o null
+		e = q.uniqueResult();
+
 		session.close();
 
 		return e;
 	}
-	
-	@SuppressWarnings("deprecation")
-	public void modificarSalarioYFechaAltPorApellido(String apellido, float salario, Date fechaAlt) {
+
+	protected void modificarSalarioYFechaAltPorApellido(String apellido, float salario, Date fechaAlt) {
 		Session session = null;
 		Transaction tx = null;
 
 		try {
 			session = sesion.openSession();
 			tx = session.beginTransaction();
-			
+
 			Empleados e = obtenerEmpleadoPorApellido(apellido);
 
 			// Si la consulta para obtener el empleado no ha ido bien, lanzar excepción
 			if (e == null)
 				throw new Exception("No se ha encontrado un empleado con el apellido " + apellido + ".");
-			
+
 			e.setSalario(salario);
 			e.setFechaAlt(fechaAlt);
-			
-			session.update(e);
-			
+
+			// UPDATE está deprecated, se recomienda usar MERGE
+			session.merge(e);
+
 			tx.commit();
 			System.out.println("*** EMPLEADO MODIFICADO ***");
 			System.out.println(e.toStringFormat4());
@@ -270,49 +275,101 @@ public class GestorEmpleados {
 			}
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
-	private Set<Empleados> empleadosPorLocDep(String loc){
+
+	private Set<Empleados> empleadosPorLocDep(String loc) {
 		Set<Empleados> e = null;
 
 		Session session = sesion.openSession();
-		String hql = "FROM Departamentos as D WHERE D.loc = :loc";
-		Query q = session.createQuery(hql);
+		String hql = DBQueries.E_POR_LOC;
+		Query<Empleados> q = session.createQuery(hql, Empleados.class);
 		q.setParameter("loc", loc);
-		List<?> filas = q.list();
-		q.setMaxResults(1);
+		List<Empleados> filas = q.list();
 
 		if (filas.size() > 0) {
-			Departamentos d = (Departamentos) filas.get(0);
-			System.out.println(d.toStringFormat1());
-			e = (Set<Empleados>) d.getEmpleadoses();
+			e = new HashSet<Empleados>(filas);
 		}
+
 		session.close();
 
 		return e;
 	}
-	
-	public void eliminarPorLocDepartamento(String loc) {
+
+	protected void eliminarPorLocDepartamento(String loc) {
 		Session session = null;
 		Transaction tx = null;
 
 		try {
 			session = sesion.openSession();
-			//tx = session.beginTransaction();
-			
+			tx = session.beginTransaction();
+
 			Set<Empleados> empleados = empleadosPorLocDep(loc);
-			
+
+			System.out.println("*** EMPLEADOS ELIMINADOS DEL DEPARTAMENTO DE " + loc + " ***");
+
 			if (empleados != null && !empleados.isEmpty()) {
 				for (Empleados e : empleados) {
-					System.out.println(e.toStringFormat4());
+					System.out.println(e.toStringFormat3());
+					// DELETE está deprecated, se recomienda usar REMOVE
+					session.remove(e);
 				}
 			} else {
-				System.out.println("Empleados es nulo");
+				System.out.println("> No hay empleados en " + loc + ".");
 			}
 
-			
+			tx.commit();
+
 		} catch (Exception e) {
-			
+			System.out.println("> Error al eliminar los empleados de " + loc + ".");
+			e.printStackTrace();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+	}
+
+	protected Empleados obtenerEmpleadoSalMaxPorDnombre(String dnombre) {
+		Empleados e = null;
+
+		Session session = sesion.openSession();
+		String hql = DBQueries.SAL_MAX_POR_DNOM;
+		Query<Empleados> q = session.createQuery(hql, Empleados.class);
+		q.setParameter("dnombre", dnombre);
+		q.setMaxResults(1);
+
+		// No obtener como lista, ya que solo puede devolver uno o null
+		e = q.uniqueResult();
+
+		session.close();
+
+		return e;
+	}
+
+	protected void eliminarEmpleMaxSalPorDnombre(String dnombre) {
+		Session session = null;
+		Transaction tx = null;
+
+		try {
+			session = sesion.openSession();
+			tx = session.beginTransaction();
+
+			Empleados e = obtenerEmpleadoSalMaxPorDnombre(dnombre);
+
+			System.out.println("*** EMPLEADO ELIMINADO DEL DEPARTAMENTO DE " + dnombre + " ***");
+
+			if (e != null) {
+				System.out.println(e.toStringFormat1());
+				// DELETE está deprecated, se recomienda usar REMOVE
+				session.remove(e);
+			} else {
+				System.out.println("> No hay empleados en " + dnombre + ".");
+			}
+
+			tx.commit();
+
+		} catch (Exception e) {
+			System.out.println("> Error al eliminar el empleado de " + dnombre + ".");
+			e.printStackTrace();
 		} finally {
 			if (session != null) {
 				session.close();

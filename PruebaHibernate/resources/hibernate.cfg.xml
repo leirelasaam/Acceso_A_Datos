@@ -3,8 +3,9 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.password">Elorrieta00</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3305/leire</property>
+        <property name="hibernate.connection.password">1234</property>
+        <!-- Indicar que no se usa SSL para que no salga la advertencia por consola -->
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/empresa?useSSL=false</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.hbm2ddl.auto">none</property>
