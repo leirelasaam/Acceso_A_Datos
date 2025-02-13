@@ -28,4 +28,9 @@ public class SQLDateUtil {
 			return null;
 		}
 	}
+	
+	public static java.sql.Date getCurrentDate() {
+        long currentTime = System.currentTimeMillis();
+        return new java.sql.Date(currentTime);
+    }
 }

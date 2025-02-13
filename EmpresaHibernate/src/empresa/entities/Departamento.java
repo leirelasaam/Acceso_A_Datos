@@ -66,4 +66,5 @@ public class Departamento implements java.io.Serializable {
 		return "Departamento [deptNo=" + deptNo + ", dnombre=" + dnombre + ", loc=" + loc + "]";
 	}
 
+	
 }

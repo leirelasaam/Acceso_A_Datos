@@ -24,6 +24,9 @@ public class PanelTabla extends JPanel {
 		
 		PanelEmpleados panelEmpleados = new PanelEmpleados();
 		tabbedPane.addTab("Empleados", null, panelEmpleados, null);
+		
+		PanelQueries panelQueries = new PanelQueries();
+		tabbedPane.addTab("Queries", null, panelQueries, null);
 	}
 
 }
