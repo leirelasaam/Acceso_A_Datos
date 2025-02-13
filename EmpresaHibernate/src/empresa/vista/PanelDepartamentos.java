@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.SessionFactory;
@@ -135,9 +136,12 @@ public class PanelDepartamentos extends JPanel {
 		add(panelQuery, BorderLayout.SOUTH);
 		panelQuery.setLayout(new GridLayout(1, 0, 0, 0));
 
-		JTextField txtQuery = new JTextField();
-		txtQuery.setColumns(10);
-		panelQuery.add(txtQuery);
+		JTextArea txtQuery = new JTextArea(5, 30);
+		txtQuery.setWrapStyleWord(true);
+		txtQuery.setLineWrap(true);
+		
+		JScrollPane scrollPaneQuery = new JScrollPane(txtQuery);
+		panelQuery.add(scrollPaneQuery);
 
 		JButton btnEjecutar = new JButton("Ejecutar query");
 		panelQuery.add(btnEjecutar);
