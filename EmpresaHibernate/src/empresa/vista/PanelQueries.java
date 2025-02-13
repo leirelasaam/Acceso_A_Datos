@@ -38,6 +38,7 @@ public class PanelQueries extends JPanel {
         addFila(DBQueries.EMPLE_CONT_DIR, "Empleados cuyo número de departamento sea de Contabilidad y el oficio DIRECTOR");
         addFila(DBQueries.EMPLE_SAL_MADRID, "Empleados que tengan mejor sueldo y que sean del departamento Madrid");
         addFila(DBQueries.DIR_EMPLE_MAX_COM, "Director del empleado que más gana en comisión");
+        addFila(DBQueries.EMPLE_MAX_SAL_BARCELONA, "Empleado que más salario tiene en Barcelona");
 	}
 	
 	private void addFila(String query, String desc) {
