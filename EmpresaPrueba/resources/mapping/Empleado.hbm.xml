@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated 14 feb 2025, 11:05:01 by Hibernate Tools 6.5.1.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class catalog="empresa" name="prueba.entities.Empleado" optimistic-lock="none" table="empleado">
+        <id name="empNo" type="short">
+            <column name="emp_no"/>
+            <generator class="assigned"/>
+        </id>
+        <many-to-one class="prueba.entities.Departamento" fetch="select" name="departamento">
+            <column name="dept_no" not-null="true"/>
+        </many-to-one>
+        <property name="apellido" type="string">
+            <column length="10" name="apellido"/>
+        </property>
+        <property name="oficio" type="string">
+            <column length="10" name="oficio"/>
+        </property>
+        <property name="dir" type="java.lang.Short">
+            <column name="dir"/>
+        </property>
+        <property name="fechaAlt" type="date">
+            <column length="10" name="fecha_alt"/>
+        </property>
+        <property name="salario" type="java.lang.Float">
+            <column name="salario" precision="6"/>
+        </property>
+        <property name="comision" type="java.lang.Float">
+            <column name="comision" precision="6"/>
+        </property>
+    </class>
+</hibernate-mapping>

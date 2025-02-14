@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+	<table-filter match-catalog="empresa" match-name="departamento" />
+	<table-filter match-catalog="empresa" match-name="empleado" />
+	<table catalog="empresa" name="departamento">
+		<column name="dept_no"></column>
+		<column name="dnombre"></column>
+		<column name="loc"></column>
+	</table>
+	<table catalog="empresa" name="empleado">
+		<column name="emp_no"></column>
+		<column name="apellido"></column>
+		<column name="oficio"></column>
+		<column name="dir"></column>
+		<column name="fecha_alt"></column>
+		<column name="salario"></column>
+		<column name="comision"></column>
+		<column name="dept_no"></column>
+	</table>
+</hibernate-reverse-engineering>
